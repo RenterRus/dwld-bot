@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+// Импорт пустого типа
+import "google/protobuf/empty.proto";
+
+// Имя пакета
+package grpc.v1;
+
+// Опция расположения генерашки
+option go_package = "docs/proto/v1";
+
+service Bot {
+    rpc RegisterDownloader (RegisterDownloaderRequest) returns (google.protobuf.Empty) {}
+}
+
+message RegisterDownloaderRequest{
+    string serverName = 1;
+    repeated string allowedRootLinks = 2;
+    string serverHost = 3;
+    int32 serverPort = 4;
+}

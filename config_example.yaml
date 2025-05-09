@@ -1,0 +1,16 @@
+grpc:
+    host: "127.0.0.1"
+    port: 9999
+    enable: true
+
+db:
+    pathtodb: "./db"
+    namedb: "links.db"
+
+tg:
+    Token: "token"
+    AllowedIDs:
+        - "1"
+        - "2"
+    Admins:
+        - "3"
