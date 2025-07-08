@@ -1,8 +1,5 @@
 syntax = "proto3";
 
-// Импорт пустого типа
-import "google/protobuf/empty.proto";
-
 // Имя пакета
 package grpc.v1;
 
@@ -10,27 +7,16 @@ package grpc.v1;
 option go_package = "docs/proto/v1";
 
 service Downloader {
-    rpc SetToQueue (SetToQueueRequest) returns (SetToQueueResponse) {}
-    rpc History (google.protobuf.Empty) returns (HistoryResponse) {}
+    rpc RegisterDownloader (RegisterDownloaderRequest) returns (RegisterDownloaderResponse) {}
 }
 
-
-message HistoryResponse{
-    repeated LinkRequest history = 1;
+message RegisterDownloaderRequest{
+    string serverName = 1;
+    repeated string allowedRootLinks = 2;
+    string serverHost = 3;
+    int32 serverPort = 4;
 }
 
-message SetToQueueRequest{
-    string link = 1;
-    optional int32 maxQuality = 2;
-}
-
-message SetToQueueResponse{
-    repeated LinkRequest linksInWork = 1;
-}
-
-message LinkRequest {
-    string link = 1;
-    string status = 2;
-  
-    optional string name = 3;
+message RegisterDownloaderResponse{
+    optional string status = 1;
 }

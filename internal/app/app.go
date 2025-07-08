@@ -2,22 +2,14 @@ package app
 
 import (
 	"dwld-bot/internal/controller/grpc"
-	"dwld-bot/internal/controller/http"
-	"dwld-bot/internal/repo/persistent"
-	"dwld-bot/internal/repo/temporary"
 	"dwld-bot/internal/usecase/download"
-	"dwld-bot/pkg/cache"
 	"dwld-bot/pkg/grpcserver"
-	"dwld-bot/pkg/httpserver"
-	"dwld-bot/pkg/sqldb"
 	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"strconv"
 	"syscall"
-
-	"github.com/AlekSi/pointer"
 )
 
 func NewApp(configPath string) error {
@@ -33,20 +25,10 @@ func NewApp(configPath string) error {
 		return fmt.Errorf("ReadConfig: %w", err)
 	}
 
-	go func() {
-		httpserver.NewHttpServer(&httpserver.Server{
-			Host:   conf.HTTP.Host,
-			Port:   conf.HTTP.Port,
-			Enable: conf.HTTP.Enable,
-			Mux:    http.NewRoute(),
-		})
-	}()
+	// !!! db
+	// !!! tg
 
-	cc := cache.NewCache(conf.Cache.Host, conf.Cache.Port)
-	downloadUsecases := download.NewDownload(
-		pointer.To(persistent.NewSQLRepo(sqldb.NewDB(conf.PathToDB, conf.NameDB))),
-		temporary.NewMemCache(cc),
-	)
+	downloadUsecases := download.NewDownloadUsecases()
 
 	// gRPC Server
 	grpcServer := grpcserver.New(grpcserver.Port(strconv.Itoa(conf.GRPC.Port)))
@@ -64,7 +46,6 @@ func NewApp(configPath string) error {
 		log.Fatal(fmt.Errorf("app - Run - grpcServer.Notify: %w", err))
 	}
 
-	cc.Close()
 	err = grpcServer.Shutdown()
 	if err != nil {
 		log.Fatal(fmt.Errorf("app - Run - grpcServer.Shutdown: %w", err))
