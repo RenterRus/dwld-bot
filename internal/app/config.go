@@ -16,23 +16,21 @@ type Server struct {
 	Enable bool   `validate:"required"`
 }
 
-type FTPClient struct {
-	Addr            Server `validate:"required"`
-	User            string `validate:"required"`
-	Pass            string `validate:"required"`
-	RemoteDirectory string `validate:"required"`
+type TelegramCong struct {
+	Token      string   `validate:"required"`
+	AllowedIDs []string `validate:"required"`
+	Admins     []string `validate:"required"`
+}
+
+type DBLite struct {
+	PathToDB string `validate:"required"`
+	NameDB   string `validate:"required"`
 }
 
 type Config struct {
-	GRPC Server    `validate:"required"`
-	HTTP Server    `validate:"required"`
-	FTP  FTPClient `validate:"required"`
-
-	PathToDB string `validate:"required"`
-	NameDB   string `validate:"required"`
-	WorkPath string `validate:"required"`
-
-	Cache Server `validate:"required"`
+	GRPC Server
+	TG   TelegramCong
+	DB   DBLite
 }
 
 func ReadConfig(path string, fileName string) (*Config, error) {
