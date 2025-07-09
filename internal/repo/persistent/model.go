@@ -1,11 +1,37 @@
 package persistent
 
-type LinkModel struct {
-	link, filename, path, text, stage_config, message string
-	retry                                             int
+import (
+	"dwld-bot/internal/entity"
+)
+
+type Task interface {
+	SetTask(task entity.TaskModel) error
+	LoadTasks(by entity.LoadBy, task entity.TaskModel) ([]*entity.TaskModel, error)
+	DeleteTask(link string) error
+}
+
+type Server interface {
+	StorageServer(server entity.ServerModel) error
+	LoadServers(AllowedRootLink string) ([]*entity.ServerModel, error)
 }
 
 type SQLRepo interface {
-	Select(q string) ([]LinkModel, error)
-	Upsert(LinkModel) ([]LinkModel, error)
+	Task
+	Server
+}
+
+type ServerDTO struct {
+	Name             string `sql:"name"`
+	AllowedRootLinks string `sql:"allowedRootLinks"`
+	Host             string `sql:"host"`
+	Port             int    `sql:"port"`
+}
+
+type TaskDTO struct {
+	Link      string `sql:"link"`
+	UserID    string `sql:"userID"`
+	MessageID string `sql:"messageID"`
+	ErrorMsg  string `sql:"errorMsgw"`
+	Quality   int    `sql:"quality"`
+	SendAt    string `sql:"sendingAt"`
 }
