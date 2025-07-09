@@ -1,8 +1,8 @@
 package v1
 
 import (
-	proto "dwld-bot/docs/proto/v1"
-	"dwld-bot/internal/usecase/download"
+	proto "github.com/RenterRus/dwld-bot/docs/proto/v1"
+	"github.com/RenterRus/dwld-bot/internal/usecase/download"
 )
 
 type V1 struct {

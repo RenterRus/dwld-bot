@@ -1,10 +1,11 @@
 package main
 
 import (
-	"dwld-bot/internal/app"
 	"flag"
 	"log"
 	"os"
+
+	"github.com/RenterRus/dwld-bot/internal/app"
 )
 
 func main() {

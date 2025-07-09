@@ -1,6 +1,6 @@
 package persitent
 
-import "dwld-bot/internal/entity"
+import "github.com/RenterRus/dwld-bot/internal/entity"
 
 type Task interface {
 	SetTask(task entity.TaskModel) error

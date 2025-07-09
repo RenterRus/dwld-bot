@@ -1,15 +1,16 @@
 package app
 
 import (
-	"dwld-bot/internal/controller/grpc"
-	"dwld-bot/internal/usecase/download"
-	"dwld-bot/pkg/grpcserver"
 	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"strconv"
 	"syscall"
+
+	"github.com/RenterRus/dwld-bot/internal/controller/grpc"
+	"github.com/RenterRus/dwld-bot/internal/usecase/download"
+	"github.com/RenterRus/dwld-bot/pkg/grpcserver"
 )
 
 func NewApp(configPath string) error {

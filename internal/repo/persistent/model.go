@@ -1,7 +1,7 @@
 package persistent
 
 import (
-	"dwld-bot/internal/entity"
+	"github.com/RenterRus/dwld-bot/internal/entity"
 )
 
 type Task interface {

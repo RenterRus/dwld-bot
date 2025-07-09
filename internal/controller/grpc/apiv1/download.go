@@ -2,7 +2,8 @@ package v1
 
 import (
 	"context"
-	v1 "dwld-bot/docs/proto/v1"
+
+	v1 "github.com/RenterRus/dwld-bot/docs/proto/v1"
 )
 
 // !!! Держим сервер и управляем его поведением

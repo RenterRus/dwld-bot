@@ -2,12 +2,13 @@ package persistent
 
 import (
 	"database/sql"
-	"dwld-bot/internal/entity"
-	"dwld-bot/pkg/sqldb"
 	"fmt"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/RenterRus/dwld-bot/internal/entity"
+	"github.com/RenterRus/dwld-bot/pkg/sqldb"
 )
 
 type persistentRepo struct {
