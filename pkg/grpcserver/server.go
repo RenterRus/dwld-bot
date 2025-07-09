@@ -12,6 +12,8 @@ const (
 	_defaultAddr = ":80"
 )
 
+// !!! Поднимаем grpc
+
 // Server -.
 type Server struct {
 	App     *pbgrpc.Server

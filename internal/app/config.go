@@ -8,8 +8,6 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// !!!
-
 type Server struct {
 	Host   string `validate:"required"`
 	Port   int    `validate:"required"`

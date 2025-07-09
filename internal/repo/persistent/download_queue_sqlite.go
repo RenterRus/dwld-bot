@@ -4,6 +4,8 @@ import (
 	"dwld-bot/pkg/sqldb"
 )
 
+// !!! Ходим по локальной бд
+
 type persistentRepo struct {
 	db *sqldb.DB
 }
