@@ -11,6 +11,8 @@ import (
 	"github.com/RenterRus/dwld-bot/pkg/sqldb"
 )
 
+// Идем в локальную БД
+
 type persistentRepo struct {
 	db *sqldb.DB
 }
