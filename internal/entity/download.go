@@ -26,3 +26,28 @@ const (
 	ByLink
 	ByAny
 )
+
+type TaskInfo struct {
+	Link           string
+	Filename       string
+	MoveTo         string
+	TargetQuantity int64
+	Procentage     float64
+	Status         string
+	TotalSize      float64
+	CurrentSize    float64
+	Message        string
+}
+
+type Status struct {
+	Sensors string
+	Tasks   []*TaskInfo
+}
+
+type TaskRaw struct {
+	Link          string
+	Status        string
+	TargetQuality string
+	Name          *string
+	Message       *string
+}

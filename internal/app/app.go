@@ -9,7 +9,7 @@ import (
 	"syscall"
 
 	"github.com/RenterRus/dwld-bot/internal/controller/grpc"
-	"github.com/RenterRus/dwld-bot/internal/usecase/download"
+	"github.com/RenterRus/dwld-bot/internal/usecase/bot"
 	"github.com/RenterRus/dwld-bot/pkg/grpcserver"
 )
 
@@ -29,7 +29,7 @@ func NewApp(configPath string) error {
 	// !!! db
 	// !!! tg
 
-	downloadUsecases := download.NewDownloadUsecases()
+	downloadUsecases := bot.NewDownloadUsecases(nil, nil)
 
 	// gRPC Server
 	grpcServer := grpcserver.New(grpcserver.Port(strconv.Itoa(conf.GRPC.Port)))

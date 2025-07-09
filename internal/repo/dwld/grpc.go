@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/AlekSi/pointer"
+	"github.com/RenterRus/dwld-bot/internal/entity"
 	dwl "github.com/RenterRus/dwld-downloader/docs/proto/v1"
 	"github.com/samber/lo"
 	"google.golang.org/grpc"
@@ -27,24 +28,16 @@ func NewDWLD() DWLDModel {
 	}
 }
 
-func (d *Downloader) CleanHistory(ctx context.Context) ([]*Task, error) {
+func (d *Downloader) CleanHistory(ctx context.Context) ([]*entity.TaskRaw, error) {
 	tasks, err := d.client.CleanHistory(ctx, &emptypb.Empty{})
 	if err != nil {
 		return nil, fmt.Errorf("CleanHistory: %w", err)
 	}
 
-	return lo.Map(tasks.History, func(t *dwl.Task, _ int) *Task {
-		return &Task{
-			Link:          t.Link,
-			Status:        t.Status,
-			TargetQuality: t.MaxQuantity,
-			Name:          t.Name,
-			Message:       t.Message,
-		}
-	}), nil
+	return lo.Map(tasks.History, taskToTaskRaw), nil
 }
 
-func (d *Downloader) DeleteFromQueue(ctx context.Context, link string) ([]*Task, error) {
+func (d *Downloader) DeleteFromQueue(ctx context.Context, link string) ([]*entity.TaskRaw, error) {
 	tasks, err := d.client.DeleteFromQueue(ctx, &dwl.DeleteFromQueueRequest{
 		Link: link,
 	})
@@ -52,35 +45,19 @@ func (d *Downloader) DeleteFromQueue(ctx context.Context, link string) ([]*Task,
 		return nil, fmt.Errorf("DeleteFromQueue: %w", err)
 	}
 
-	return lo.Map(tasks.LinksInWork, func(t *dwl.Task, _ int) *Task {
-		return &Task{
-			Link:          t.Link,
-			Status:        t.Status,
-			TargetQuality: t.MaxQuantity,
-			Name:          t.Name,
-			Message:       t.Message,
-		}
-	}), nil
+	return lo.Map(tasks.LinksInWork, taskToTaskRaw), nil
 }
 
-func (d *Downloader) Queue(ctx context.Context) ([]*Task, error) {
+func (d *Downloader) Queue(ctx context.Context) ([]*entity.TaskRaw, error) {
 	tasks, err := d.client.Queue(ctx, &emptypb.Empty{})
 	if err != nil {
 		return nil, fmt.Errorf("Queue: %w", err)
 	}
 
-	return lo.Map(tasks.Queue, func(t *dwl.Task, _ int) *Task {
-		return &Task{
-			Link:          t.Link,
-			Status:        t.Status,
-			TargetQuality: t.MaxQuantity,
-			Name:          t.Name,
-			Message:       t.Message,
-		}
-	}), nil
+	return lo.Map(tasks.Queue, taskToTaskRaw), nil
 }
 
-func (d *Downloader) SetToQueue(ctx context.Context, link string, targetQuality int32) ([]*Task, error) {
+func (d *Downloader) SetToQueue(ctx context.Context, link string, targetQuality int32) ([]*entity.TaskRaw, error) {
 	tasks, err := d.client.SetToQueue(ctx, &dwl.SetToQueueRequest{
 		Link:       link,
 		MaxQuality: pointer.To(targetQuality),
@@ -89,37 +66,17 @@ func (d *Downloader) SetToQueue(ctx context.Context, link string, targetQuality 
 		return nil, fmt.Errorf("SetToQueue: %w", err)
 	}
 
-	return lo.Map(tasks.LinksInWork, func(t *dwl.Task, _ int) *Task {
-		return &Task{
-			Link:          t.Link,
-			Status:        t.Status,
-			TargetQuality: t.MaxQuantity,
-			Name:          t.Name,
-			Message:       t.Message,
-		}
-	}), nil
+	return lo.Map(tasks.LinksInWork, taskToTaskRaw), nil
 }
 
-func (d *Downloader) Status(ctx context.Context) (*Status, error) {
+func (d *Downloader) Status(ctx context.Context) (*entity.Status, error) {
 	tasks, err := d.client.Status(ctx, &emptypb.Empty{})
 	if err != nil {
 		return nil, fmt.Errorf("Status: %w", err)
 	}
 
-	return &Status{
-		Tasks: lo.Map(tasks.LinksInWork, func(t *dwl.OnWork, _ int) *TaskInfo {
-			return &TaskInfo{
-				Link:           t.Link,
-				Filename:       t.Filename,
-				MoveTo:         t.MoveTo,
-				TargetQuantity: t.TargetQuantity,
-				Procentage:     t.Procentage,
-				Status:         t.Status,
-				TotalSize:      t.TotalSize,
-				CurrentSize:    t.CurrentSize,
-				Message:        t.Message,
-			}
-		}),
+	return &entity.Status{
+		Tasks:   lo.Map(tasks.LinksInWork, onWorkToTaskInfo),
 		Sensors: tasks.Sensors,
 	}, nil
 }

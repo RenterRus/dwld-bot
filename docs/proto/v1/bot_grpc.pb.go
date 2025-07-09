@@ -13,6 +13,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -28,7 +29,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DownloaderClient interface {
-	RegisterDownloader(ctx context.Context, in *RegisterDownloaderRequest, opts ...grpc.CallOption) (*RegisterDownloaderResponse, error)
+	RegisterDownloader(ctx context.Context, in *RegisterDownloaderRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type downloaderClient struct {
@@ -39,9 +40,9 @@ func NewDownloaderClient(cc grpc.ClientConnInterface) DownloaderClient {
 	return &downloaderClient{cc}
 }
 
-func (c *downloaderClient) RegisterDownloader(ctx context.Context, in *RegisterDownloaderRequest, opts ...grpc.CallOption) (*RegisterDownloaderResponse, error) {
+func (c *downloaderClient) RegisterDownloader(ctx context.Context, in *RegisterDownloaderRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(RegisterDownloaderResponse)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, Downloader_RegisterDownloader_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -53,7 +54,7 @@ func (c *downloaderClient) RegisterDownloader(ctx context.Context, in *RegisterD
 // All implementations must embed UnimplementedDownloaderServer
 // for forward compatibility.
 type DownloaderServer interface {
-	RegisterDownloader(context.Context, *RegisterDownloaderRequest) (*RegisterDownloaderResponse, error)
+	RegisterDownloader(context.Context, *RegisterDownloaderRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedDownloaderServer()
 }
 
@@ -64,7 +65,7 @@ type DownloaderServer interface {
 // pointer dereference when methods are called.
 type UnimplementedDownloaderServer struct{}
 
-func (UnimplementedDownloaderServer) RegisterDownloader(context.Context, *RegisterDownloaderRequest) (*RegisterDownloaderResponse, error) {
+func (UnimplementedDownloaderServer) RegisterDownloader(context.Context, *RegisterDownloaderRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterDownloader not implemented")
 }
 func (UnimplementedDownloaderServer) mustEmbedUnimplementedDownloaderServer() {}
