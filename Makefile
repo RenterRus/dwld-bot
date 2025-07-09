@@ -7,7 +7,7 @@ proto-v1: ### generate source files from proto
 		--go-grpc_out=. \
 		--go-grpc_opt=paths=source_relative \
 		docs/proto/v1/*.proto
-.PHONY: proto-v1
+
 
 update:
 	@git pull && make build
@@ -35,3 +35,4 @@ install on server:
 
 create migration:
 	@go run github.com/pressly/goose/v3/cmd/goose@latest create create_links sql -dir migration
+	@go run github.com/pressly/goose/v3/cmd/goose@latest create create_downloaders sql -dir migration
