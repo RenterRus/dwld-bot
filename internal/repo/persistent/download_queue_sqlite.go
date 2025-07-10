@@ -119,8 +119,8 @@ func (p *persistentRepo) StorageServer(server entity.ServerModel) error {
 	return nil
 }
 
-func (p *persistentRepo) LoadServers(AllowedRootLink string) ([]*entity.ServerModel, error) {
-	rows, err := p.db.Select("select name, allowedRootLinks, host, port from downloaders where allowedRootLinks like '%$1%'", AllowedRootLink)
+func (p *persistentRepo) LoadServers() ([]*entity.ServerModel, error) {
+	rows, err := p.db.Select("select name, allowedRootLinks, host, port from downloaders")
 	defer func() {
 		rows.Close()
 	}()

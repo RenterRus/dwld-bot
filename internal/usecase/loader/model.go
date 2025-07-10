@@ -1,5 +1,7 @@
 package loader
 
+import "context"
+
 type Loader interface {
-	Processor()
+	Processor(ctx context.Context)
 }

@@ -28,6 +28,7 @@ func NewApp(configPath string) error {
 
 	// !!! db
 	// !!! tg
+	// !!! bot
 
 	downloadUsecases := bot.NewDownloadUsecases(nil, nil)
 

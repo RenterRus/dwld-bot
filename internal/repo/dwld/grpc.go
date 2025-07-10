@@ -14,21 +14,21 @@ import (
 
 // Идем по скачивальщикам
 
-type Downloader struct {
+type DownloaderRepo struct {
 	client dwl.DownloaderClient
 }
 
-func NewDWLD() DWLDModel {
-	cc, err := grpc.NewClient("127.0.0.1:8999")
+func NewDWLD(host string, port int) DWLDModel {
+	cc, err := grpc.NewClient(fmt.Sprintf("%s:%d", host, port))
 	if err != nil {
 		fmt.Println(err)
 	}
-	return &Downloader{
+	return &DownloaderRepo{
 		client: dwl.NewDownloaderClient(cc),
 	}
 }
 
-func (d *Downloader) CleanHistory(ctx context.Context) ([]*entity.TaskRaw, error) {
+func (d *DownloaderRepo) CleanHistory(ctx context.Context) ([]*entity.TaskRaw, error) {
 	tasks, err := d.client.CleanHistory(ctx, &emptypb.Empty{})
 	if err != nil {
 		return nil, fmt.Errorf("CleanHistory: %w", err)
@@ -37,7 +37,7 @@ func (d *Downloader) CleanHistory(ctx context.Context) ([]*entity.TaskRaw, error
 	return lo.Map(tasks.History, taskToTaskRaw), nil
 }
 
-func (d *Downloader) DeleteFromQueue(ctx context.Context, link string) ([]*entity.TaskRaw, error) {
+func (d *DownloaderRepo) DeleteFromQueue(ctx context.Context, link string) ([]*entity.TaskRaw, error) {
 	tasks, err := d.client.DeleteFromQueue(ctx, &dwl.DeleteFromQueueRequest{
 		Link: link,
 	})
@@ -48,7 +48,7 @@ func (d *Downloader) DeleteFromQueue(ctx context.Context, link string) ([]*entit
 	return lo.Map(tasks.LinksInWork, taskToTaskRaw), nil
 }
 
-func (d *Downloader) Queue(ctx context.Context) ([]*entity.TaskRaw, error) {
+func (d *DownloaderRepo) Queue(ctx context.Context) ([]*entity.TaskRaw, error) {
 	tasks, err := d.client.Queue(ctx, &emptypb.Empty{})
 	if err != nil {
 		return nil, fmt.Errorf("Queue: %w", err)
@@ -57,7 +57,7 @@ func (d *Downloader) Queue(ctx context.Context) ([]*entity.TaskRaw, error) {
 	return lo.Map(tasks.Queue, taskToTaskRaw), nil
 }
 
-func (d *Downloader) SetToQueue(ctx context.Context, link string, targetQuality int32) ([]*entity.TaskRaw, error) {
+func (d *DownloaderRepo) SetToQueue(ctx context.Context, link string, targetQuality int32) ([]*entity.TaskRaw, error) {
 	tasks, err := d.client.SetToQueue(ctx, &dwl.SetToQueueRequest{
 		Link:       link,
 		MaxQuality: pointer.To(targetQuality),
@@ -69,7 +69,7 @@ func (d *Downloader) SetToQueue(ctx context.Context, link string, targetQuality 
 	return lo.Map(tasks.LinksInWork, taskToTaskRaw), nil
 }
 
-func (d *Downloader) Status(ctx context.Context) (*entity.Status, error) {
+func (d *DownloaderRepo) Status(ctx context.Context) (*entity.Status, error) {
 	tasks, err := d.client.Status(ctx, &emptypb.Empty{})
 	if err != nil {
 		return nil, fmt.Errorf("Status: %w", err)

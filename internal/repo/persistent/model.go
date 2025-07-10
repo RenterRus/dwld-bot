@@ -12,7 +12,7 @@ type Task interface {
 
 type Server interface {
 	StorageServer(server entity.ServerModel) error
-	LoadServers(AllowedRootLink string) ([]*entity.ServerModel, error)
+	LoadServers() ([]*entity.ServerModel, error)
 }
 
 type SQLRepo interface {
