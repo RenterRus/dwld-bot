@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-// !!! Соединяемся с БД
+// Соединяемся с БД
 
 type DB struct {
 	pathToDB string

@@ -12,16 +12,14 @@ const (
 	_defaultAddr = ":80"
 )
 
-// !!! Поднимаем grpc
+// Поднимаем grpc
 
-// Server -.
 type Server struct {
 	App     *pbgrpc.Server
 	notify  chan error
 	address string
 }
 
-// New -.
 func New(opts ...Option) *Server {
 	s := &Server{
 		App:     pbgrpc.NewServer(),
@@ -37,7 +35,6 @@ func New(opts ...Option) *Server {
 	return s
 }
 
-// Start -.
 func (s *Server) Start() {
 	go func() {
 		ln, err := net.Listen("tcp", s.address)
@@ -53,12 +50,10 @@ func (s *Server) Start() {
 	}()
 }
 
-// Notify -.
 func (s *Server) Notify() <-chan error {
 	return s.notify
 }
 
-// Shutdown -.
 func (s *Server) Shutdown() error {
 	s.App.GracefulStop()
 
