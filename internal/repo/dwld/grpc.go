@@ -16,6 +16,7 @@ import (
 
 type DownloaderRepo struct {
 	client dwl.DownloaderClient
+	cc     *grpc.ClientConn
 }
 
 func NewDWLD(host string, port int) DWLDModel {
@@ -23,6 +24,7 @@ func NewDWLD(host string, port int) DWLDModel {
 	if err != nil {
 		fmt.Println(err)
 	}
+
 	return &DownloaderRepo{
 		client: dwl.NewDownloaderClient(cc),
 	}
