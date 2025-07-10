@@ -1,12 +1,16 @@
 package bot
 
-import "github.com/RenterRus/dwld-bot/internal/entity"
+import (
+	"context"
+
+	"github.com/RenterRus/dwld-bot/internal/entity"
+)
 
 type Bot interface {
 	SetTask(entity.TaskModel) error
-	ViewTasks() ([]*entity.TaskModel, error)
-	DeleteTask(link string) error
-	Status() (*entity.TaskInfo, error)
+	ViewTasks(ctx context.Context, userID string) ([]*entity.TaskRaw, error)
+	DeleteTask(ctx context.Context, link string) error
+	Status(ctx context.Context) (*entity.TaskInfo, error)
 
 	StorageServer(server entity.ServerModel) error
 }
