@@ -81,19 +81,43 @@ func (b *BotCases) ViewTasks(ctx context.Context, userID string) ([]*entity.Task
 	return resp, nil
 }
 
-func (b *BotCases) DeleteTask(ctx context.Context, link string) error {
+func (b *BotCases) DeleteTask(ctx context.Context, link string) {
 	if err := b.db.DeleteTask(link); err != nil {
-		fmt.Printf("DeleteTask(DelteTask): %s", err.Error())
+		fmt.Printf("DeleteTask(DelteTask): %s\n", err.Error())
 	}
 
 	servers, err := b.servers()
-
-	return nil
+	if err != nil {
+		fmt.Printf("DeleteTask(servers): %s\n", err.Error())
+	} else {
+		for _, server := range servers {
+			if _, err := server.DeleteFromQueue(ctx, link); err != nil {
+				fmt.Printf("DeleteTask(DeleteFromQueue): %s\n", err.Error())
+			}
+		}
+	}
 }
 
-func (b *BotCases) Status(ctx context.Context) (*entity.TaskInfo, error) {
-	// !!!
-	return nil, nil
+func (b *BotCases) Status(ctx context.Context) ([]*entity.Status, error) {
+	resp := make([]*entity.Status, 0, 2)
+
+	servers, err := b.servers()
+	if err != nil {
+		return nil, fmt.Errorf("Status(servers): %w", err.Error())
+	} else {
+		for _, server := range servers {
+			var status *entity.Status
+			if status, err = server.Status(ctx); err != nil {
+				fmt.Printf("Status(Status): %s\n", err.Error())
+			}
+			resp = append(resp, &entity.Status{
+				Sensors: status.Sensors,
+				Tasks:   status.Tasks,
+			})
+		}
+	}
+
+	return resp, nil
 }
 
 func (b *BotCases) StorageServer(server entity.ServerModel) error {

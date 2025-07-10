@@ -66,7 +66,8 @@ func (l *LoaderCase) Processor(ctx context.Context) {
 				//  Идем по конфигам серверов и ищем подходящий
 				for _, conf := range servers {
 					// Разрешенных нет - идем к следующему серверу
-					if !slices.Contains(conf.AllowedRootLinks, host.Host) {
+					if !slices.Contains(conf.AllowedRootLinks, host.Host) || !slices.Contains(conf.AllowedRootLinks, "*") ||
+						!slices.Contains(conf.AllowedRootLinks, "any") || !slices.Contains(conf.AllowedRootLinks, "all") {
 						continue
 					}
 
