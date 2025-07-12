@@ -8,9 +8,9 @@ db:
     namedb: "links.db"
 
 tg:
-    Token: ""
+    Token: "token"
     AllowedIDs:
-        - ""
-        - ""
+        - "1"
+        - "2"
     Admins:
-        - ""
+        - "3"

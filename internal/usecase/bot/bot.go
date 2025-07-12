@@ -16,10 +16,9 @@ type BotCases struct {
 	dwld dwld.DWLDModel
 }
 
-func NewDownloadUsecases(db persistent.SQLRepo, dwld dwld.DWLDModel) Bot {
+func NewBotUsecases(db persistent.SQLRepo) Bot {
 	return &BotCases{
-		db:   db,
-		dwld: dwld,
+		db: db,
 	}
 }
 
@@ -118,6 +117,19 @@ func (b *BotCases) Status(ctx context.Context) ([]*entity.Status, error) {
 	}
 
 	return resp, nil
+}
+
+func (b *BotCases) CleanHistory(ctx context.Context) {
+	servers, err := b.servers()
+	if err != nil {
+		fmt.Printf("CleanHistory(servers): %s\n", err.Error())
+	} else {
+		for _, server := range servers {
+			if _, err = server.CleanHistory(ctx); err != nil {
+				fmt.Printf("CleanHistory(CleanHistory): %s\n", err.Error())
+			}
+		}
+	}
 }
 
 func (b *BotCases) StorageServer(server entity.ServerModel) error {

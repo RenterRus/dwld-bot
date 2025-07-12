@@ -3,6 +3,8 @@ package sqldb
 import (
 	"database/sql"
 	"fmt"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 // Соединяемся с БД
@@ -52,6 +54,10 @@ func (d *DB) connect() (bool, error) {
 	var err error
 	d.conn, err = sql.Open("sqlite3", d.pathToDB+"/"+d.dbName)
 	if err != nil {
+		fmt.Println("===============")
+		fmt.Println("CONNECT", err)
+		fmt.Println("===============")
+
 		return false, fmt.Errorf("db connect(open): %w", err)
 	}
 

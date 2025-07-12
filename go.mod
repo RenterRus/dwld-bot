@@ -6,6 +6,7 @@ require (
 	github.com/AlekSi/pointer v1.2.0
 	github.com/RenterRus/dwld-downloader v0.0.0-20250709174248-938c75226011
 	github.com/go-playground/validator/v10 v10.27.0
+	github.com/mattn/go-sqlite3 v1.14.28
 	github.com/samber/lo v1.51.0
 	github.com/spf13/viper v1.20.1
 	google.golang.org/grpc v1.73.0

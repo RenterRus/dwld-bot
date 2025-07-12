@@ -13,4 +13,6 @@ type Bot interface {
 	Status(ctx context.Context) ([]*entity.Status, error)
 
 	StorageServer(server entity.ServerModel) error
+
+	CleanHistory(ctx context.Context)
 }

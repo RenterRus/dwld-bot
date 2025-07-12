@@ -9,7 +9,7 @@ package grpc.v1;
 // Опция расположения генерашки
 option go_package = "docs/proto/v1";
 
-service Downloader {
+service Bot {
     rpc RegisterDownloader (RegisterDownloaderRequest) returns (google.protobuf.Empty) {}
 }
 

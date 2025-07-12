@@ -12,5 +12,5 @@ func NewDownloadRoutes(app *pbgrpc.Server, usecases bot.Bot) {
 		u: usecases,
 	}
 
-	proto.RegisterDownloaderServer(app, r)
+	proto.RegisterBotServer(app, r)
 }

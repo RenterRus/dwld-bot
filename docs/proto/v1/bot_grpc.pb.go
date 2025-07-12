@@ -22,101 +22,101 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Downloader_RegisterDownloader_FullMethodName = "/grpc.v1.Downloader/RegisterDownloader"
+	Bot_RegisterDownloader_FullMethodName = "/grpc.v1.Bot/RegisterDownloader"
 )
 
-// DownloaderClient is the client API for Downloader service.
+// BotClient is the client API for Bot service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type DownloaderClient interface {
+type BotClient interface {
 	RegisterDownloader(ctx context.Context, in *RegisterDownloaderRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
-type downloaderClient struct {
+type botClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewDownloaderClient(cc grpc.ClientConnInterface) DownloaderClient {
-	return &downloaderClient{cc}
+func NewBotClient(cc grpc.ClientConnInterface) BotClient {
+	return &botClient{cc}
 }
 
-func (c *downloaderClient) RegisterDownloader(ctx context.Context, in *RegisterDownloaderRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *botClient) RegisterDownloader(ctx context.Context, in *RegisterDownloaderRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, Downloader_RegisterDownloader_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Bot_RegisterDownloader_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// DownloaderServer is the server API for Downloader service.
-// All implementations must embed UnimplementedDownloaderServer
+// BotServer is the server API for Bot service.
+// All implementations must embed UnimplementedBotServer
 // for forward compatibility.
-type DownloaderServer interface {
+type BotServer interface {
 	RegisterDownloader(context.Context, *RegisterDownloaderRequest) (*emptypb.Empty, error)
-	mustEmbedUnimplementedDownloaderServer()
+	mustEmbedUnimplementedBotServer()
 }
 
-// UnimplementedDownloaderServer must be embedded to have
+// UnimplementedBotServer must be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedDownloaderServer struct{}
+type UnimplementedBotServer struct{}
 
-func (UnimplementedDownloaderServer) RegisterDownloader(context.Context, *RegisterDownloaderRequest) (*emptypb.Empty, error) {
+func (UnimplementedBotServer) RegisterDownloader(context.Context, *RegisterDownloaderRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterDownloader not implemented")
 }
-func (UnimplementedDownloaderServer) mustEmbedUnimplementedDownloaderServer() {}
-func (UnimplementedDownloaderServer) testEmbeddedByValue()                    {}
+func (UnimplementedBotServer) mustEmbedUnimplementedBotServer() {}
+func (UnimplementedBotServer) testEmbeddedByValue()             {}
 
-// UnsafeDownloaderServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to DownloaderServer will
+// UnsafeBotServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to BotServer will
 // result in compilation errors.
-type UnsafeDownloaderServer interface {
-	mustEmbedUnimplementedDownloaderServer()
+type UnsafeBotServer interface {
+	mustEmbedUnimplementedBotServer()
 }
 
-func RegisterDownloaderServer(s grpc.ServiceRegistrar, srv DownloaderServer) {
-	// If the following call pancis, it indicates UnimplementedDownloaderServer was
+func RegisterBotServer(s grpc.ServiceRegistrar, srv BotServer) {
+	// If the following call pancis, it indicates UnimplementedBotServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&Downloader_ServiceDesc, srv)
+	s.RegisterService(&Bot_ServiceDesc, srv)
 }
 
-func _Downloader_RegisterDownloader_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Bot_RegisterDownloader_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RegisterDownloaderRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DownloaderServer).RegisterDownloader(ctx, in)
+		return srv.(BotServer).RegisterDownloader(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Downloader_RegisterDownloader_FullMethodName,
+		FullMethod: Bot_RegisterDownloader_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DownloaderServer).RegisterDownloader(ctx, req.(*RegisterDownloaderRequest))
+		return srv.(BotServer).RegisterDownloader(ctx, req.(*RegisterDownloaderRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Downloader_ServiceDesc is the grpc.ServiceDesc for Downloader service.
+// Bot_ServiceDesc is the grpc.ServiceDesc for Bot service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Downloader_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "grpc.v1.Downloader",
-	HandlerType: (*DownloaderServer)(nil),
+var Bot_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "grpc.v1.Bot",
+	HandlerType: (*BotServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "RegisterDownloader",
-			Handler:    _Downloader_RegisterDownloader_Handler,
+			Handler:    _Bot_RegisterDownloader_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

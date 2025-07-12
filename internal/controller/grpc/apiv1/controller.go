@@ -6,7 +6,7 @@ import (
 )
 
 type V1 struct {
-	proto.DownloaderServer
+	proto.BotServer
 
 	u bot.Bot
 }

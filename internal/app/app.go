@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -9,8 +10,11 @@ import (
 	"syscall"
 
 	"github.com/RenterRus/dwld-bot/internal/controller/grpc"
+	"github.com/RenterRus/dwld-bot/internal/controller/telegram"
+	"github.com/RenterRus/dwld-bot/internal/repo/persistent"
 	"github.com/RenterRus/dwld-bot/internal/usecase/bot"
 	"github.com/RenterRus/dwld-bot/pkg/grpcserver"
+	"github.com/RenterRus/dwld-bot/pkg/sqldb"
 )
 
 func NewApp(configPath string) error {
@@ -29,8 +33,19 @@ func NewApp(configPath string) error {
 	// !!! db
 	// !!! tg
 	// !!! bot
+	// !!! loader
 
-	downloadUsecases := bot.NewDownloadUsecases(nil, nil)
+	downloadUsecases := bot.NewBotUsecases(nil)
+
+	bot := telegram.NewBot(telegram.BotConfig{
+		Token:         "7583098928:AAHwMPsdfkmghtsRzeiAn_CeWBCpP-EURp8",
+		AllowedChatID: []string{},
+		AdminChatID:   []string{"884900075"},
+	}, persistent.NewSQLRepo(sqldb.NewDB("/Users/arturdavydov/Downloads/dwld-bot", "links.db")))
+
+	go func() {
+		bot.Processor(context.Background())
+	}()
 
 	// gRPC Server
 	grpcServer := grpcserver.New(grpcserver.Port(strconv.Itoa(conf.GRPC.Port)))

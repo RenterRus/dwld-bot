@@ -107,9 +107,8 @@ const file_docs_proto_v1_bot_proto_rawDesc = "" +
 	"serverHost\x12\x1e\n" +
 	"\n" +
 	"serverPort\x18\x04 \x01(\x05R\n" +
-	"serverPort2`\n" +
-	"\n" +
-	"Downloader\x12R\n" +
+	"serverPort2Y\n" +
+	"\x03Bot\x12R\n" +
 	"\x12RegisterDownloader\x12\".grpc.v1.RegisterDownloaderRequest\x1a\x16.google.protobuf.Empty\"\x00B\x0fZ\rdocs/proto/v1b\x06proto3"
 
 var (
@@ -130,8 +129,8 @@ var file_docs_proto_v1_bot_proto_goTypes = []any{
 	(*emptypb.Empty)(nil),             // 1: google.protobuf.Empty
 }
 var file_docs_proto_v1_bot_proto_depIdxs = []int32{
-	0, // 0: grpc.v1.Downloader.RegisterDownloader:input_type -> grpc.v1.RegisterDownloaderRequest
-	1, // 1: grpc.v1.Downloader.RegisterDownloader:output_type -> google.protobuf.Empty
+	0, // 0: grpc.v1.Bot.RegisterDownloader:input_type -> grpc.v1.RegisterDownloaderRequest
+	1, // 1: grpc.v1.Bot.RegisterDownloader:output_type -> google.protobuf.Empty
 	1, // [1:2] is the sub-list for method output_type
 	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
