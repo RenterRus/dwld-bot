@@ -20,7 +20,6 @@ const (
 	DEFAULT_QUALITY = 4320 // 8K
 )
 
-// !!!
 type BotConfig struct {
 	Token         string
 	AllowedChatID []string
