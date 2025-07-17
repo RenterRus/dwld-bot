@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/RenterRus/dwld-bot/internal/app"
 )
@@ -16,6 +17,8 @@ func main() {
 		log.Fatal("config flag not found")
 		os.Exit(1)
 	}
+
+	time.Sleep(time.Second)
 
 	if err := app.NewApp(*path); err != nil {
 		fmt.Println(err)
