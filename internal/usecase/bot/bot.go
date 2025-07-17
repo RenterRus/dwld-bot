@@ -69,12 +69,14 @@ func (b *BotCases) ViewTasks(ctx context.Context, userID string) ([]*entity.Task
 		})
 	}
 
-	for _, server := range servers {
-		tasksRaw, err := server.Queue(ctx)
-		if err != nil {
-			fmt.Printf("ViewTasks (Queue): %s\n", err.Error())
+	if len(servers) > 0 {
+		for _, server := range servers {
+			tasksRaw, err := server.Queue(ctx)
+			if err != nil {
+				fmt.Printf("ViewTasks (Queue): %s\n", err.Error())
+			}
+			resp = append(resp, tasksRaw...)
 		}
-		resp = append(resp, tasksRaw...)
 	}
 
 	return resp, nil
@@ -88,7 +90,7 @@ func (b *BotCases) DeleteTask(ctx context.Context, link string) {
 	servers, err := b.servers()
 	if err != nil {
 		fmt.Printf("DeleteTask(servers): %s\n", err.Error())
-	} else {
+	} else if len(servers) > 0 {
 		for _, server := range servers {
 			if _, err := server.DeleteFromQueue(ctx, link); err != nil {
 				fmt.Printf("DeleteTask(DeleteFromQueue): %s\n", err.Error())
@@ -103,7 +105,7 @@ func (b *BotCases) Status(ctx context.Context) ([]*entity.Status, error) {
 	servers, err := b.servers()
 	if err != nil {
 		return nil, fmt.Errorf("Status(servers): %w", err)
-	} else {
+	} else if len(servers) > 0 {
 		for _, server := range servers {
 			var status *entity.Status
 			if status, err = server.Status(ctx); err != nil {
@@ -123,7 +125,7 @@ func (b *BotCases) CleanHistory(ctx context.Context) {
 	servers, err := b.servers()
 	if err != nil {
 		fmt.Printf("CleanHistory(servers): %s\n", err.Error())
-	} else {
+	} else if len(servers) > 0 {
 		for _, server := range servers {
 			if _, err = server.CleanHistory(ctx); err != nil {
 				fmt.Printf("CleanHistory(CleanHistory): %s\n", err.Error())

@@ -23,8 +23,8 @@ func onWorkToTaskInfo(t *dwl.OnWork, _ int) *entity.TaskInfo {
 		TargetQuantity: t.TargetQuantity,
 		Procentage:     t.Procentage,
 		Status:         t.Status,
-		TotalSize:      t.TotalSize,
 		CurrentSize:    t.CurrentSize,
+		TotalSize:      t.TotalSize,
 		Message:        t.Message,
 	}
 }

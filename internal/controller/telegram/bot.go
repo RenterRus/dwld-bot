@@ -66,15 +66,7 @@ func (b *Bot) toAdmins(msg string) {
 	}
 
 	for _, v := range admins {
-		mess, err := b.bot.Send(tgbotapi.NewMessage(v, msg))
-		// ЕСЛИ НЕТ ПРОБЛЕМ
-		if err == nil {
-			b.deleteMessage.SetToQueue(&rbot.TaskToDelete{
-				ChatID:    mess.Chat.ID,
-				MessageID: mess.MessageID,
-				Deadline:  time.Now().Add(time.Minute),
-			})
-		}
+		b.sendMessage(tgbotapi.NewMessage(v, msg))
 	}
 }
 
@@ -132,14 +124,8 @@ func (b *Bot) Processor(ctx context.Context) {
 
 					b.botCase.DeleteTask(ctx, update.Message.Text)
 
-					mInfo, err := b.bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] удалена", update.Message.Text)))
-					if err == nil {
-						b.deleteMessage.SetToQueue(&rbot.TaskToDelete{
-							ChatID:    mInfo.Chat.ID,
-							MessageID: mInfo.MessageID,
-							Deadline:  time.Now().Add(time.Minute * DEFAULT_TIMEOUT),
-						})
-					}
+					b.sendMessage(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] удалена", update.Message.Text)))
+
 					continue
 				}
 
@@ -164,7 +150,7 @@ func (b *Bot) Processor(ctx context.Context) {
 					UserID:    strconv.Itoa(int(update.Message.Chat.ID)),
 					MessageID: strconv.Itoa(update.Message.MessageID),
 					ErrorMsg:  "",
-					SendAt:    time.Now().Add(time.Minute * 5),
+					SendAt:    time.Now().Add(time.Minute * DEFAULT_TIMEOUT),
 				}); err != nil {
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Не удалось вставить в очередь ссылку %s. Причина: %v", update.Message.Text, err.Error()))
 				} else {
@@ -259,14 +245,9 @@ func (b *Bot) Processor(ctx context.Context) {
 								task.Procentage, task.CurrentSize, task.TotalSize, task.Link, task.Message, task.MoveTo, task.Filename))
 						}
 
+						b.sendMessage(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("%s\n%s", sensors.String(), queues.String())))
 					}
 
-					resp := strings.Builder{}
-					resp.WriteString(sensors.String())
-					resp.WriteString("\n")
-					resp.WriteString(queues.String())
-
-					msg.Text = resp.String()
 				}
 			case ViewQueue:
 				queue, err := b.botCase.ViewTasks(ctx, strconv.Itoa(int(update.CallbackQuery.Message.Chat.ID)))
@@ -310,17 +291,22 @@ func (b *Bot) Processor(ctx context.Context) {
 				}
 			}
 
-			var mInfo tgbotapi.Message
-			var err error
-			if mInfo, err = b.bot.Send(msg); err != nil {
-				fmt.Println("NewMessage", err)
-			}
-			b.deleteMessage.SetToQueue(&rbot.TaskToDelete{
-				ChatID:    mInfo.Chat.ID,
-				MessageID: mInfo.MessageID,
-				Deadline:  time.Now().Add(time.Minute * DEFAULT_TIMEOUT),
-			})
+			b.sendMessage(msg)
 		}
 
+	}
+}
+
+func (b *Bot) sendMessage(c tgbotapi.Chattable) {
+	var mInfo tgbotapi.Message
+	var err error
+	if mInfo, err = b.bot.Send(c); err != nil {
+		fmt.Println("NewMessage", err)
+	} else {
+		b.deleteMessage.SetToQueue(&rbot.TaskToDelete{
+			ChatID:    mInfo.Chat.ID,
+			MessageID: mInfo.MessageID,
+			Deadline:  time.Now().Add(time.Minute * DEFAULT_TIMEOUT),
+		})
 	}
 }
