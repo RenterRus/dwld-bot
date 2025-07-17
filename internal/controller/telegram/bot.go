@@ -229,10 +229,6 @@ func (b *Bot) Processor(ctx context.Context) {
 				if err != nil {
 					msg.Text = fmt.Sprintf("Ошибка получения актуального состояния: %s", err.Error())
 				} else {
-					if len(status) == 0 {
-						b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Все очереди свободны"))
-					}
-
 					sensors := strings.Builder{}
 					sensors.WriteString("SENSORS\n")
 
@@ -261,6 +257,10 @@ func (b *Bot) Processor(ctx context.Context) {
 				if err != nil {
 					msg.Text = fmt.Sprintf("Ошибка получения всей очереди: %s", err.Error())
 				} else {
+					if len(queue) == 0 {
+						b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Все очереди свободны"))
+					}
+
 					resp := strings.Builder{}
 					for _, v := range queue {
 						resp.WriteString(fmt.Sprintf("[%s][%s][%s][%s][%s]\n", v.Status, v.TargetQuality, pointer.Get(v.Name), v.Link, pointer.Get(v.Message)))
