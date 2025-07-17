@@ -245,7 +245,10 @@ func (b *Bot) Processor(ctx context.Context) {
 								task.Procentage, task.CurrentSize, task.TotalSize, task.Link, task.Message, task.MoveTo, task.Filename))
 						}
 
-						b.sendMessage(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("%s\n%s", sensors.String(), queues.String())))
+						b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("%s\n%s", sensors.String(), queues.String())))
+
+						sensors.Reset()
+						queues.Reset()
 					}
 
 				}
