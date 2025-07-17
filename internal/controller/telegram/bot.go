@@ -229,6 +229,10 @@ func (b *Bot) Processor(ctx context.Context) {
 				if err != nil {
 					msg.Text = fmt.Sprintf("Ошибка получения актуального состояния: %s", err.Error())
 				} else {
+					if len(status) == 0 {
+						b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Все очереди свободны"))
+					}
+
 					sensors := strings.Builder{}
 					sensors.WriteString("SENSORS\n")
 
