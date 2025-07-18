@@ -241,7 +241,7 @@ func (b *Bot) Processor(ctx context.Context) {
 						sensors.WriteString("\n")
 
 						for n, task := range v.Tasks {
-							queues.WriteString(fmt.Sprintf("#G%d|L%d: [%s][%d][%.2f][%.2f/%.2f][%s][%s]TO:[%s] %s\n", (i + 1), (n + 1), task.Status, int(task.TargetQuantity),
+							queues.WriteString(fmt.Sprintf("#G%d|L%d: [%s][%d][%.2f][%.2f/%.2f][%s][%s] TO:[%s] %s\n", (i + 1), (n + 1), task.Status, int(task.TargetQuantity),
 								task.Procentage, task.TotalSize, task.CurrentSize, task.Link, task.Message, task.MoveTo, task.Filename))
 						}
 
