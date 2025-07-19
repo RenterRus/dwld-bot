@@ -234,14 +234,15 @@ func (b *Bot) Processor(ctx context.Context) {
 
 					queues := strings.Builder{}
 					queues.WriteString("QUEUE\n")
+					b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Тут отображаются очереди и показания датчиков скачивальщиков. Кнопка \"Показать очередь\" покажет очередь по всей системе с включением очереди бота"))
 
 					for i, v := range status {
-						sensors.WriteString(fmt.Sprintf("#%d\n", (i + 1)))
+						sensors.WriteString(fmt.Sprintf("%d of %d: %s\n", (i + 1), len(status), v.ServerName))
 						sensors.WriteString(v.Sensors)
 						sensors.WriteString("\n")
 
 						for n, task := range v.Tasks {
-							queues.WriteString(fmt.Sprintf("#G%d|L%d: [%s][%d][%.2f][%.2f/%.2f][%s][%s] TO:[%s] %s\n", (i + 1), (n + 1), task.Status, int(task.TargetQuantity),
+							queues.WriteString(fmt.Sprintf("G%d|L%d: [%s][%d][%.2f][%.2f/%.2f][%s][%s] TO:[%s] %s\n", (i + 1), (n + 1), task.Status, int(task.TargetQuantity),
 								task.Procentage, task.TotalSize, task.CurrentSize, task.Link, task.Message, task.MoveTo, task.Filename))
 						}
 

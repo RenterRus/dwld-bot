@@ -16,8 +16,9 @@ import (
 // Идем по скачивальщикам
 
 type DownloaderRepo struct {
-	client dwl.DownloaderClient
-	cc     *grpc.ClientConn
+	client     dwl.DownloaderClient
+	cc         *grpc.ClientConn
+	serverName string
 }
 
 func NewDWLD(host string, port int) DWLDModel {
@@ -82,4 +83,12 @@ func (d *DownloaderRepo) Status(ctx context.Context) (*entity.Status, error) {
 		Tasks:   lo.Map(tasks.LinksInWork, onWorkToTaskInfo),
 		Sensors: tasks.Sensors,
 	}, nil
+}
+
+func (d *DownloaderRepo) SetName(name string) DWLDModel {
+	d.serverName = name
+	return d
+}
+func (d *DownloaderRepo) Name() string {
+	return d.serverName
 }

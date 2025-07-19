@@ -40,8 +40,9 @@ type TaskInfo struct {
 }
 
 type Status struct {
-	Sensors string
-	Tasks   []*TaskInfo
+	ServerName string
+	Sensors    string
+	Tasks      []*TaskInfo
 }
 
 type TaskRaw struct {

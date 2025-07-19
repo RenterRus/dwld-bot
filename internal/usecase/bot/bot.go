@@ -29,9 +29,8 @@ func (b *BotCases) servers() ([]dwld.DWLDModel, error) {
 	}
 
 	resp := make([]dwld.DWLDModel, 0, len(servers))
-
 	for _, v := range servers {
-		resp = append(resp, dwld.NewDWLD(v.Host, v.Port))
+		resp = append(resp, dwld.NewDWLD(v.Host, v.Port).SetName(v.Name))
 	}
 
 	return resp, nil
@@ -112,8 +111,9 @@ func (b *BotCases) Status(ctx context.Context) ([]*entity.Status, error) {
 				fmt.Printf("Status(Status): %s\n", err.Error())
 			}
 			resp = append(resp, &entity.Status{
-				Sensors: pointer.Get(status).Sensors,
-				Tasks:   pointer.Get(status).Tasks,
+				Sensors:    pointer.Get(status).Sensors,
+				Tasks:      pointer.Get(status).Tasks,
+				ServerName: server.Name(),
 			})
 		}
 	}
