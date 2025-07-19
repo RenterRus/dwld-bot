@@ -233,7 +233,7 @@ func (b *Bot) Processor(ctx context.Context) {
 					sensors.WriteString("SENSORS\n")
 
 					queues := strings.Builder{}
-					queues.WriteString("QUEUE\n")
+					queues.WriteString("QUEUE (CACHE)\n")
 					b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Тут отображаются очереди и показания датчиков скачивальщиков. Кнопка \"Показать очередь\" покажет очередь по всей системе с включением очереди бота"))
 
 					for i, v := range status {
