@@ -66,9 +66,9 @@ func (r *BotRepo) SendMessage(chatID, message string) {
 	}
 
 	r.SetToQueue(&TaskToDelete{
-		ChatID:    int64(chat),
+		ChatID:    int64(res.Chat.ID),
 		MessageID: res.MessageID,
-		Deadline:  time.Now().Add(TIMEOUT_DELETE_MSG * time.Second),
+		Deadline:  time.Now().Add(time.Second * TIMEOUT_DELETE_MSG),
 	})
 }
 
