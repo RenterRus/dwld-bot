@@ -180,9 +180,9 @@ func (b *Bot) Processor(ctx context.Context) {
 			}
 			if isLinkInsert {
 				b.botCase.SetTask(entity.TaskModel{
-					Link:    update.Message.Text,
-					Quality: DEFAULT_QUALITY,
-
+					Link:      update.Message.Text,
+					Quality:   DEFAULT_QUALITY,
+					UserName:  update.Message.From.UserName,
 					UserID:    strconv.Itoa(int(update.Message.Chat.ID)),
 					MessageID: strconv.Itoa(mInfo.MessageID),
 					ErrorMsg:  "",
@@ -277,6 +277,7 @@ func (b *Bot) Processor(ctx context.Context) {
 						UserID:    strconv.Itoa(int(update.CallbackQuery.Message.Chat.ID)),
 						MessageID: strconv.Itoa(update.CallbackQuery.Message.MessageID),
 						ErrorMsg:  "",
+						UserName:  update.CallbackQuery.From.UserName,
 						Quality:   DEFAULT_QUALITY,
 						SendAt:    time.Now().Add(time.Minute * 5),
 					}
