@@ -9,7 +9,8 @@ import (
 )
 
 const (
-	TIMEOUT_DELETE_MSG = 17
+	TIMEOUT_REFRESH_MSG = 17
+	TIMEOUT_DELETE_MSG  = 123
 )
 
 type BotRepo struct {
@@ -49,8 +50,30 @@ func (r *BotRepo) DeleteMsg(userID, messageID string) error {
 	return nil
 }
 
+func (r *BotRepo) SendMessage(chatID, message string) {
+	chat := 0
+	var err error
+
+	if chat, err = strconv.Atoi(chatID); err != nil {
+		fmt.Printf("SendMessage.ParseInt(chatID): %s\n", err.Error())
+		return
+	}
+
+	res, err := r.bot.Send(tgbotapi.NewMessage(int64(chat), message))
+	if err != nil {
+		fmt.Println("SendMessage (Send):", err.Error())
+		return
+	}
+
+	r.SetToQueue(&TaskToDelete{
+		ChatID:    int64(chat),
+		MessageID: res.MessageID,
+		Deadline:  time.Now().Add(TIMEOUT_DELETE_MSG),
+	})
+}
+
 func (r *BotRepo) Processor() {
-	t := time.NewTicker(time.Second * TIMEOUT_DELETE_MSG)
+	t := time.NewTicker(time.Second * TIMEOUT_REFRESH_MSG)
 
 	for {
 		select {

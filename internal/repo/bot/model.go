@@ -13,4 +13,5 @@ type BotModel interface {
 	Processor()
 	Stop()
 	SetToQueue(*TaskToDelete)
+	SendMessage(chatID, message string)
 }

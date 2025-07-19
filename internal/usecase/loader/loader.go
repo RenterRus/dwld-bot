@@ -109,7 +109,8 @@ func (l *LoaderCase) Processor(ctx context.Context) {
 						l.db.SetTask(*v)
 					}
 
-					// Раз мы оказались тут, то запись была отправлена на сервер, дальше отправлять ее не будем, идем к следующей ссылке
+					fmt.Printf("Ссылка [%s] отправлена в скачивальщик %s с целевым качеством %d\n", v.Link, conf.Name, v.Quality)
+					l.bot.SendMessage(v.UserID, fmt.Sprintf("Ссылка [%s] отправлена в скачивальщик %s с целевым качеством %d", v.Link, conf.Name, v.Quality))
 					break
 				}
 			}
