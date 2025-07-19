@@ -10,7 +10,7 @@ import (
 
 const (
 	TIMEOUT_REFRESH_MSG = 17
-	TIMEOUT_DELETE_MSG  = 123
+	TIMEOUT_DELETE_MSG  = 585
 )
 
 type BotRepo struct {
