@@ -10,7 +10,7 @@ import (
 
 const (
 	TIMEOUT_REFRESH_MSG = 17
-	TIMEOUT_DELETE_MSG  = 585
+	TIMEOUT_DELETE_MSG  = 7
 )
 
 type BotRepo struct {
@@ -68,7 +68,7 @@ func (r *BotRepo) SendMessage(chatID, message string) {
 	r.SetToQueue(&TaskToDelete{
 		ChatID:    int64(res.Chat.ID),
 		MessageID: res.MessageID,
-		Deadline:  time.Now().Add(time.Second * TIMEOUT_DELETE_MSG),
+		Deadline:  time.Now().Add(time.Minute * TIMEOUT_DELETE_MSG),
 	})
 }
 
