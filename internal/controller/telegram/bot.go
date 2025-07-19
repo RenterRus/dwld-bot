@@ -144,9 +144,9 @@ func (b *Bot) Processor(ctx context.Context) {
 
 					// Это ссылка, но вставка не удалась
 				} else if err := b.botCase.SetTask(entity.TaskModel{
-					Link:    update.Message.Text,
-					Quality: DEFAULT_QUALITY,
-
+					Link:      update.Message.Text,
+					Quality:   DEFAULT_QUALITY,
+					UserName:  update.Message.From.UserName,
 					UserID:    strconv.Itoa(int(update.Message.Chat.ID)),
 					MessageID: strconv.Itoa(update.Message.MessageID),
 					ErrorMsg:  "",

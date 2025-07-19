@@ -6,6 +6,7 @@ type TaskModel struct {
 	Link      string
 	UserID    string
 	MessageID string
+	UserName  string
 	ErrorMsg  string
 	Quality   int
 	SendAt    time.Time

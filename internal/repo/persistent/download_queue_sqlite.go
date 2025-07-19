@@ -24,8 +24,8 @@ func NewSQLRepo(db *sqldb.DB) SQLRepo {
 }
 
 func (p *persistentRepo) SetTask(task entity.TaskModel) error {
-	if _, err := p.db.Exec("insert into links(link, quality, sendingAt, userID, messageID, errorMsg) values ($1, $2, $3, $4, $5, $6) on conflict (link) do update set quality = excluded.quality, sendingAt = excluded.sendingAt, userID = excluded.userID, messageID = excluded.messageID, errorMsg = excluded.errorMsg;",
-		task.Link, task.Quality, task.SendAt.Unix(), task.UserID, task.MessageID, task.ErrorMsg); err != nil {
+	if _, err := p.db.Exec("insert into links(link, quality, sendingAt, userID, messageID, errorMsg, userName) values ($1, $2, $3, $4, $5, $6, $7) on conflict (link) do update set quality = excluded.quality, sendingAt = excluded.sendingAt, userID = excluded.userID, messageID = excluded.messageID, errorMsg = excluded.errorMsg, userName = excluded.userName;",
+		task.Link, task.Quality, task.SendAt.Unix(), task.UserID, task.MessageID, task.ErrorMsg, task.UserName); err != nil {
 
 		return fmt.Errorf("SetTask: %w", err)
 	}
@@ -39,24 +39,24 @@ func (p *persistentRepo) LoadTasks(by entity.LoadBy, task entity.TaskModel) ([]*
 
 	switch by {
 	case entity.ByLink:
-		rows, err = p.db.Select("select link, quality, sendingAt, userID, messageID, errorMsg from links where link = $1", task.Link)
+		rows, err = p.db.Select("select link, quality, sendingAt, userID, messageID, errorMsg, userName from links where link = $1", task.Link)
 		if err != nil {
 			return nil, fmt.Errorf("LoadTask(Select by links): %w", err)
 		}
 	case entity.ByAny:
-		rows, err = p.db.Select("select link, quality, sendingAt, userID, messageID, errorMsg from links")
+		rows, err = p.db.Select("select link, quality, sendingAt, userID, messageID, errorMsg, userName from links")
 		if err != nil {
 			return nil, fmt.Errorf("LoadTask(Select by any): %w", err)
 		}
 	case entity.ByTime:
-		rows, err = p.db.Select("select link, quality, sendingAt, userID, messageID, errorMsg from links where sendingAt < $1", strconv.Itoa(int(time.Now().Unix())))
+		rows, err = p.db.Select("select link, quality, sendingAt, userID, messageID, errorMsg, userName from links where sendingAt < $1", strconv.Itoa(int(time.Now().Unix())))
 		if err != nil {
 			return nil, fmt.Errorf("LoadTask(Select by time): %w", err)
 		}
 	case entity.ByUserID:
 		fallthrough
 	default:
-		rows, err = p.db.Select("select link, quality, sendingAt, userID, messageID, errorMsg from links where userID = $1", task.UserID)
+		rows, err = p.db.Select("select link, quality, sendingAt, userID, messageID, errorMsg, userName from links where userID = $1", task.UserID)
 		if err != nil {
 			return nil, fmt.Errorf("LoadTask(Select by userID/default): %w", err)
 		}
@@ -72,7 +72,7 @@ func (p *persistentRepo) LoadTasks(by entity.LoadBy, task entity.TaskModel) ([]*
 	resp := make([]*entity.TaskModel, 0)
 	var row TaskDTO
 	for rows.Next() {
-		err := rows.Scan(&row.Link, &row.Quality, &row.SendAt, &row.UserID, &row.MessageID, &row.ErrorMsg)
+		err := rows.Scan(&row.Link, &row.Quality, &row.SendAt, &row.UserID, &row.MessageID, &row.ErrorMsg, &row.UserName)
 		if err != nil {
 			return nil, fmt.Errorf("LoadTask(Scan): %w", err)
 		}
@@ -88,6 +88,7 @@ func (p *persistentRepo) LoadTasks(by entity.LoadBy, task entity.TaskModel) ([]*
 			MessageID: row.MessageID,
 			ErrorMsg:  row.ErrorMsg,
 			Quality:   row.Quality,
+			UserName:  row.UserName,
 			SendAt:    time.Unix(int64(sendAt), 0),
 		})
 	}

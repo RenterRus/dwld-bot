@@ -85,7 +85,7 @@ func (l *LoaderCase) Processor(ctx context.Context) {
 					// Этот сервер подходит
 
 					//  Разрешенные ссылки сервера содержат ссылку задачи
-					_, err := dwld.NewDWLD(conf.Host, conf.Port).SetToQueue(ctx, v.Link, int32(v.Quality))
+					_, err := dwld.NewDWLD(conf.Host, conf.Port).SetToQueue(ctx, v.Link, v.UserName, int32(v.Quality))
 					if err != nil {
 						fmt.Printf("Loader(NewDWLD): %s", err.Error())
 						v.ErrorMsg = err.Error()

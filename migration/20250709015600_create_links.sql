@@ -5,6 +5,7 @@ link text unique,
 quality integer, 
 sendingAt text, 
 userID text,
+userName text,
 messageID text,
 errorMsg text
 );

@@ -10,7 +10,7 @@ type DWLDModel interface {
 	CleanHistory(ctx context.Context) ([]*entity.TaskRaw, error)
 	DeleteFromQueue(ctx context.Context, link string) ([]*entity.TaskRaw, error)
 	Queue(ctx context.Context) ([]*entity.TaskRaw, error)
-	SetToQueue(ctx context.Context, link string, targetQuality int32) ([]*entity.TaskRaw, error)
+	SetToQueue(ctx context.Context, link, userName string, targetQuality int32) ([]*entity.TaskRaw, error)
 	Status(ctx context.Context) (*entity.Status, error)
 	SetName(name string) DWLDModel
 	Name() string

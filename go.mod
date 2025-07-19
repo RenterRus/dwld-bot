@@ -4,12 +4,12 @@ go 1.24.4
 
 require (
 	github.com/AlekSi/pointer v1.2.0
-	github.com/RenterRus/dwld-downloader v0.0.0-20250709174248-938c75226011
+	github.com/RenterRus/dwld-downloader v0.0.0-20250719210740-09cbbc6b4c95
 	github.com/go-playground/validator/v10 v10.27.0
 	github.com/mattn/go-sqlite3 v1.14.28
 	github.com/samber/lo v1.51.0
 	github.com/spf13/viper v1.20.1
-	google.golang.org/grpc v1.73.0
+	google.golang.org/grpc v1.74.0
 	google.golang.org/protobuf v1.36.6
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -31,9 +31,9 @@ require (
 	github.com/subosito/gotenv v1.6.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
-	golang.org/x/crypto v0.39.0 // indirect
-	golang.org/x/net v0.38.0 // indirect
-	golang.org/x/sys v0.33.0 // indirect
-	golang.org/x/text v0.26.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20250324211829-b45e905df463 // indirect
+	golang.org/x/crypto v0.40.0 // indirect
+	golang.org/x/net v0.41.0 // indirect
+	golang.org/x/sys v0.34.0 // indirect
+	golang.org/x/text v0.27.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20250528174236-200df99c418a // indirect
 )

@@ -61,9 +61,10 @@ func (d *DownloaderRepo) Queue(ctx context.Context) ([]*entity.TaskRaw, error) {
 	return lo.Map(tasks.Queue, taskToTaskRaw), nil
 }
 
-func (d *DownloaderRepo) SetToQueue(ctx context.Context, link string, targetQuality int32) ([]*entity.TaskRaw, error) {
+func (d *DownloaderRepo) SetToQueue(ctx context.Context, link, userName string, targetQuality int32) ([]*entity.TaskRaw, error) {
 	tasks, err := d.client.SetToQueue(ctx, &dwl.SetToQueueRequest{
 		Link:       link,
+		UserName:   userName,
 		MaxQuality: pointer.To(targetQuality),
 	})
 	if err != nil {

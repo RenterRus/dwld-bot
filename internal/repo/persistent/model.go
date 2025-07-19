@@ -34,4 +34,5 @@ type TaskDTO struct {
 	ErrorMsg  string `sql:"errorMsgw"`
 	Quality   int    `sql:"quality"`
 	SendAt    string `sql:"sendingAt"`
+	UserName  string `sql:"userName"`
 }
