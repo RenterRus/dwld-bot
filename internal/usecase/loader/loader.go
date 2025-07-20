@@ -47,14 +47,12 @@ func (l *LoaderCase) Processor(ctx context.Context) {
 				fmt.Println("Processor.LoadTasks", err)
 				continue
 			}
-			fmt.Println("LenTasks:", len(tasks))
 
 			hosts, err := l.db.LoadServers()
 			if err != nil {
 				fmt.Println("Processor.LoadServers", err)
 				continue
 			}
-			fmt.Println("LenHosts:", len(hosts))
 
 			servers := make(map[string]*entity.ServerModel)
 

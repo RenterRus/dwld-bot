@@ -18,8 +18,9 @@ import (
 )
 
 const (
-	DEFAULT_QUALITY = 4320 // 8K
-	DEFAULT_TIMEOUT = 5
+	DEFAULT_QUALITY     = 4320 // 8K
+	DEFAULT_TIMEOUT     = 5
+	FAST_DELETE_TIMEOUT = 1
 )
 
 type BotConfig struct {
@@ -113,7 +114,7 @@ func (b *Bot) Processor(ctx context.Context) {
 			b.deleteMessage.SetToQueue(&rbot.TaskToDelete{
 				ChatID:    update.Message.Chat.ID,
 				MessageID: update.Message.MessageID,
-				Deadline:  time.Now().Add(time.Minute * DEFAULT_TIMEOUT),
+				Deadline:  time.Now().Add(time.Minute * FAST_DELETE_TIMEOUT),
 			})
 
 			if _, ok := allowedChats[chatID]; ok {
