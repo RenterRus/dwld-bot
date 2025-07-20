@@ -16,14 +16,14 @@ const (
 type BotRepo struct {
 	bot    *tgbotapi.BotAPI
 	notify chan struct{}
-	tasks  map[int]*TaskToDelete
+	tasks  map[string]*TaskToDelete
 }
 
 func NewBotRepo(bot *tgbotapi.BotAPI) BotModel {
 	return &BotRepo{
 		bot:    bot,
 		notify: make(chan struct{}, 1),
-		tasks:  make(map[int]*TaskToDelete),
+		tasks:  make(map[string]*TaskToDelete),
 	}
 }
 
@@ -94,7 +94,7 @@ func (r *BotRepo) Processor() {
 					if err != nil {
 						fmt.Println("DELETE MSG FAILED:", err.Error())
 					}
-					delete(r.tasks, task.MessageID)
+					delete(r.tasks, fmt.Sprintf("%d_%d", task.MessageID, task.ChatID))
 				}
 			}
 		}
@@ -111,6 +111,6 @@ func (r *BotRepo) Stop() {
 }
 
 func (r *BotRepo) SetToQueue(task *TaskToDelete) {
-	r.tasks[task.MessageID] = task
+	r.tasks[fmt.Sprintf("%d_%d", task.MessageID, task.ChatID)] = task
 	fmt.Println(r.tasks)
 }
