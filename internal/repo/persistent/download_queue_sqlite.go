@@ -157,7 +157,7 @@ func (p *persistentRepo) GetToDelete() []*entity.ToDeleteTask {
 	var rows *sql.Rows
 	var err error
 
-	rows, err = p.db.Select("select chatID, messageID, deleteAt from links where deleteAt < $1", strconv.Itoa(int(time.Now().Unix())))
+	rows, err = p.db.Select("select chatID, messageID, deleteAt from to_delete where deleteAt < $1", strconv.Itoa(int(time.Now().Unix())))
 	if err != nil {
 		fmt.Printf("GetToDelete (select): %s", err.Error())
 		return nil
