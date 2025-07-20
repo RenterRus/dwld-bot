@@ -3,6 +3,7 @@ package bot
 import (
 	"fmt"
 	"strconv"
+	"sync"
 	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -17,6 +18,7 @@ type BotRepo struct {
 	bot    *tgbotapi.BotAPI
 	notify chan struct{}
 	tasks  map[int]*TaskToDelete
+	m      sync.Mutex
 }
 
 func NewBotRepo(bot *tgbotapi.BotAPI) BotModel {
@@ -65,11 +67,17 @@ func (r *BotRepo) SendMessage(chatID, message string) {
 		return
 	}
 
-	defer func() {
-		r.DeleteMsg(strconv.Itoa(int(res.Chat.ID)), strconv.Itoa(res.MessageID))
-	}()
+	/*	defer func() {
+			r.DeleteMsg(strconv.Itoa(int(res.Chat.ID)), strconv.Itoa(res.MessageID))
+		}()
 
-	time.Sleep(time.Minute * TIMEOUT_DELETE_MSG)
+		time.Sleep(time.Minute * TIMEOUT_DELETE_MSG)*/
+	r.SetToQueue(&TaskToDelete{
+		ChatID:    res.Chat.ID,
+		MessageID: res.MessageID,
+		Deadline:  time.Now().Add(time.Minute * TIMEOUT_DELETE_MSG),
+	})
+
 }
 
 func (r *BotRepo) Processor() {
@@ -103,5 +111,7 @@ func (r *BotRepo) Stop() {
 }
 
 func (r *BotRepo) SetToQueue(task *TaskToDelete) {
+	r.m.Lock()
+	defer r.m.Unlock()
 	r.tasks[task.MessageID] = task
 }
