@@ -65,6 +65,8 @@ func (r *BotRepo) SendMessage(chatID, message string) {
 		return
 	}
 
+	fmt.Println(int64(res.Chat.ID))
+	fmt.Println(res.MessageID)
 	r.SetToQueue(&TaskToDelete{
 		ChatID:    int64(res.Chat.ID),
 		MessageID: res.MessageID,
@@ -82,7 +84,10 @@ func (r *BotRepo) Processor() {
 		case <-t.C:
 			for _, task := range r.tasks {
 				if task.Deadline.Unix() <= time.Now().Unix() {
-					r.DeleteMsg(strconv.Itoa(int(task.ChatID)), strconv.Itoa(task.MessageID))
+					err := r.DeleteMsg(strconv.Itoa(int(task.ChatID)), strconv.Itoa(task.MessageID))
+					if err != nil {
+						fmt.Println("DELETE MSG FAILED:", err.Error())
+					}
 					delete(r.tasks, task.MessageID)
 				}
 			}
@@ -99,5 +104,7 @@ func (r *BotRepo) Stop() {
 }
 
 func (r *BotRepo) SetToQueue(task *TaskToDelete) {
+	fmt.Println(task)
 	r.tasks[task.MessageID] = task
+	fmt.Println(r.tasks[task.MessageID])
 }
