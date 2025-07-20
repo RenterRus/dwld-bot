@@ -86,7 +86,9 @@ func (r *BotRepo) Processor() {
 			return
 		case <-t.C:
 			fmt.Println("r.tasks")
-			fmt.Println(r.tasks)
+			for _, v := range r.tasks {
+				fmt.Println(*v)
+			}
 			fmt.Println("r.tasks")
 
 			buf := make([]*TaskToDelete, 0, len(r.tasks))
