@@ -5,7 +5,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/AlekSi/pointer"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -66,11 +65,18 @@ func (r *BotRepo) SendMessage(chatID, message string) {
 		return
 	}
 
-	r.SetToQueue(pointer.To(TaskToDelete{
-		ChatID:    int64(res.Chat.ID),
-		MessageID: res.MessageID,
-		Deadline:  time.Now().Add(time.Minute * TIMEOUT_DELETE_MSG),
-	}))
+	defer func() {
+		r.DeleteMsg(strconv.Itoa(int(res.Chat.ID)), strconv.Itoa(res.MessageID))
+	}()
+
+	t := time.NewTimer(time.Minute * TIMEOUT_DELETE_MSG)
+
+	select {
+	case <-r.notify:
+		return
+	case <-t.C:
+		return
+	}
 }
 
 func (r *BotRepo) Processor() {
@@ -102,6 +108,7 @@ func (r *BotRepo) Stop() {
 	for _, task := range r.tasks {
 		r.DeleteMsg(strconv.Itoa(int(task.ChatID)), strconv.Itoa(task.MessageID))
 	}
+	r.notify <- struct{}{}
 	r.notify <- struct{}{}
 }
 
