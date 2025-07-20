@@ -19,7 +19,7 @@ import (
 
 const (
 	DEFAULT_QUALITY     = 4320 // 8K
-	DEFAULT_TIMEOUT     = 5
+	DEFAULT_TIMEOUT     = 3
 	FAST_DELETE_TIMEOUT = 1
 )
 

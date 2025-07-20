@@ -41,7 +41,6 @@ func (l *LoaderCase) Processor(ctx context.Context) {
 	for {
 		select {
 		case <-t.C:
-			fmt.Println("time to upload")
 			tasks, err := l.db.LoadTasks(entity.ByTime, entity.TaskModel{})
 			if err != nil {
 				fmt.Println("Processor.LoadTasks", err)

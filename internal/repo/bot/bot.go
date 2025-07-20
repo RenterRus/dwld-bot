@@ -10,7 +10,7 @@ import (
 
 const (
 	TIMEOUT_REFRESH_MSG = 17
-	TIMEOUT_DELETE_MSG  = 7
+	TIMEOUT_DELETE_MSG  = 5
 )
 
 type BotRepo struct {
@@ -65,13 +65,11 @@ func (r *BotRepo) SendMessage(chatID, message string) {
 		return
 	}
 
-	fmt.Println(int64(res.Chat.ID))
-	fmt.Println(res.MessageID)
-	r.SetToQueue(&TaskToDelete{
+	r.tasks[res.MessageID] = &TaskToDelete{
 		ChatID:    int64(res.Chat.ID),
 		MessageID: res.MessageID,
 		Deadline:  time.Now().Add(time.Minute * TIMEOUT_DELETE_MSG),
-	})
+	}
 }
 
 func (r *BotRepo) Processor() {
@@ -82,6 +80,9 @@ func (r *BotRepo) Processor() {
 		case <-r.notify:
 			return
 		case <-t.C:
+			fmt.Println("r.tasks")
+			fmt.Println(r.tasks)
+			fmt.Println("r.tasks")
 			for _, task := range r.tasks {
 				if task.Deadline.Unix() <= time.Now().Unix() {
 					err := r.DeleteMsg(strconv.Itoa(int(task.ChatID)), strconv.Itoa(task.MessageID))
@@ -104,7 +105,5 @@ func (r *BotRepo) Stop() {
 }
 
 func (r *BotRepo) SetToQueue(task *TaskToDelete) {
-	fmt.Println(task)
 	r.tasks[task.MessageID] = task
-	fmt.Println(r.tasks[task.MessageID])
 }
