@@ -5,7 +5,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/AlekSi/pointer"
 	"github.com/RenterRus/dwld-bot/internal/entity"
 	"github.com/RenterRus/dwld-bot/internal/repo/persistent"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -84,15 +83,9 @@ func (r *BotRepo) Processor() {
 		case <-r.notify:
 			return
 		case <-t.C:
-
 			tasks := r.db.GetToDelete()
-			fmt.Println("===============")
-			for _, v := range tasks {
-				fmt.Println(pointer.Get(v))
-			}
-
 			for _, task := range tasks {
-				fmt.Println("to delete:", task.ChatID, task.MesssageID)
+				fmt.Println("message to delete:", task.ChatID, task.MesssageID)
 
 				err := r.DeleteMsg(task.ChatID, task.MesssageID)
 				if err != nil {
