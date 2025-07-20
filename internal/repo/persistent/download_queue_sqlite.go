@@ -120,12 +120,13 @@ func (p *persistentRepo) StorageServer(server entity.ServerModel) error {
 
 func (p *persistentRepo) LoadServers() ([]*entity.ServerModel, error) {
 	rows, err := p.db.Select("select name, allowedRootLinks, host, port from downloaders")
-	defer func() {
-		rows.Close()
-	}()
 	if err != nil {
 		return nil, fmt.Errorf("SelectHistory: %w", err)
 	}
+
+	defer func() {
+		rows.Close()
+	}()
 
 	resp := make([]*entity.ServerModel, 0)
 	var row ServerDTO
