@@ -65,9 +65,6 @@ func (p *persistentRepo) LoadTasks(by entity.LoadBy, task entity.TaskModel) ([]*
 	defer func() {
 		rows.Close()
 	}()
-	if err != nil {
-		return nil, fmt.Errorf("SelectHistory: %w", err)
-	}
 
 	resp := make([]*entity.TaskModel, 0)
 	var row TaskDTO
@@ -147,4 +144,56 @@ func (p *persistentRepo) LoadServers() ([]*entity.ServerModel, error) {
 	}
 
 	return resp, nil
+}
+
+func (p *persistentRepo) SetToDelete(t *entity.ToDeleteTask) {
+	if _, err := p.db.Exec("insert into to_delete(chatID, messageID, deleteAt) values ($1, $2, $3)",
+		t.ChatID, t.MesssageID, strconv.Itoa(int(t.DeleteAt.Unix()))); err != nil {
+		fmt.Printf("SetToDelete: %s", err.Error())
+	}
+
+}
+func (p *persistentRepo) GetToDelete() []*entity.ToDeleteTask {
+	var rows *sql.Rows
+	var err error
+
+	rows, err = p.db.Select("select chatID, messageID, deleteAt from links where deleteAt < $1", strconv.Itoa(int(time.Now().Unix())))
+	if err != nil {
+		fmt.Printf("GetToDelete (select): %s", err.Error())
+		return nil
+	}
+
+	defer func() {
+		rows.Close()
+	}()
+
+	resp := make([]*entity.ToDeleteTask, 0)
+	var row ToDeleteTasDTO
+	for rows.Next() {
+		err := rows.Scan(&row.ChatID, &row.MesssageID, &row.DeleteAt)
+		if err != nil {
+			fmt.Printf("GetToDelete (scan): %s", err.Error())
+			return nil
+		}
+
+		deleteAt, err := strconv.Atoi(row.DeleteAt)
+		if err != nil {
+			fmt.Printf("GetToDelete (scan): %s", err.Error())
+			return nil
+		}
+
+		resp = append(resp, &entity.ToDeleteTask{
+			ChatID:     row.ChatID,
+			MesssageID: row.MesssageID,
+			DeleteAt:   time.Unix(int64(deleteAt), 0),
+		})
+	}
+
+	return resp
+}
+
+func (p *persistentRepo) RemoveToDelete(t *entity.ToDeleteTask) {
+	if _, err := p.db.Exec("delete from to_delete where chatID = $1 and messageID = $2", t.ChatID, t.MesssageID); err != nil {
+		fmt.Printf("RemoveToDelete: %s", err.Error())
+	}
 }

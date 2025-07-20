@@ -50,7 +50,7 @@ func NewBot(conf BotConfig, db persistent.SQLRepo) BotModel {
 		adminChatID:    conf.AdminChatID,
 		allowedChatID:  conf.AllowedChatID,
 		botCase:        botusecase.NewBotUsecases(db),
-		deleteMessage:  rbot.NewBotRepo(bot),
+		deleteMessage:  rbot.NewBotRepo(bot, db),
 	}
 }
 

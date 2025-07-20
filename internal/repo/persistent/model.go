@@ -4,6 +4,18 @@ import (
 	"github.com/RenterRus/dwld-bot/internal/entity"
 )
 
+type ToDeleteTasDTO struct {
+	ChatID     string `sql:"chatID"`
+	MesssageID string `sql:"messageID"`
+	DeleteAt   string `sql:"deleteAt"`
+}
+
+type ToDelete interface {
+	SetToDelete(*entity.ToDeleteTask)
+	GetToDelete() []*entity.ToDeleteTask
+	RemoveToDelete(*entity.ToDeleteTask)
+}
+
 type Task interface {
 	SetTask(task entity.TaskModel) error
 	LoadTasks(by entity.LoadBy, task entity.TaskModel) ([]*entity.TaskModel, error)
@@ -18,6 +30,7 @@ type Server interface {
 type SQLRepo interface {
 	Task
 	Server
+	ToDelete
 }
 
 type ServerDTO struct {

@@ -36,3 +36,4 @@ install on server:
 create migration:
 	@go run github.com/pressly/goose/v3/cmd/goose@latest create create_links sql -dir migration
 	@go run github.com/pressly/goose/v3/cmd/goose@latest create create_downloaders sql -dir migration
+	@go run github.com/pressly/goose/v3/cmd/goose@latest create to_delete sql -dir migration

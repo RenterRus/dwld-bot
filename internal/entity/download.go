@@ -53,3 +53,9 @@ type TaskRaw struct {
 	Name          *string
 	Message       *string
 }
+
+type ToDeleteTask struct {
+	ChatID     string    `sql:"chatID"`
+	MesssageID string    `sql:"messageID"`
+	DeleteAt   time.Time `sql:"deleteAt"`
+}

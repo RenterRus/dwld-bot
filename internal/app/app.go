@@ -42,7 +42,7 @@ func NewApp(configPath string) error {
 		AdminChatID:   conf.TG.Admins,
 	}, db)
 
-	upload := loader.NewLoader(db, rbot.NewBotRepo(bot.Bot()))
+	upload := loader.NewLoader(db, rbot.NewBotRepo(bot.Bot(), db))
 
 	go func() {
 		upload.Processor(context.Background())

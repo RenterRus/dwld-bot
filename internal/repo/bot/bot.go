@@ -3,10 +3,11 @@ package bot
 import (
 	"fmt"
 	"strconv"
-	"sync"
 	"time"
 
 	"github.com/AlekSi/pointer"
+	"github.com/RenterRus/dwld-bot/internal/entity"
+	"github.com/RenterRus/dwld-bot/internal/repo/persistent"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -16,17 +17,16 @@ const (
 )
 
 type BotRepo struct {
+	db     persistent.SQLRepo
 	bot    *tgbotapi.BotAPI
 	notify chan struct{}
-	tasks  map[int]*TaskToDelete
-	m      sync.Mutex
 }
 
-func NewBotRepo(bot *tgbotapi.BotAPI) BotModel {
+func NewBotRepo(bot *tgbotapi.BotAPI, db persistent.SQLRepo) BotModel {
 	return &BotRepo{
 		bot:    bot,
+		db:     db,
 		notify: make(chan struct{}, 1),
-		tasks:  make(map[int]*TaskToDelete),
 	}
 }
 
@@ -68,11 +68,6 @@ func (r *BotRepo) SendMessage(chatID, message string) {
 		return
 	}
 
-	/*	defer func() {
-			r.DeleteMsg(strconv.Itoa(int(res.Chat.ID)), strconv.Itoa(res.MessageID))
-		}()
-
-		time.Sleep(time.Minute * TIMEOUT_DELETE_MSG)*/
 	r.SetToQueue(&TaskToDelete{
 		ChatID:    res.Chat.ID,
 		MessageID: res.MessageID,
@@ -89,21 +84,26 @@ func (r *BotRepo) Processor() {
 		case <-r.notify:
 			return
 		case <-t.C:
+
+			tasks := r.db.GetToDelete()
 			fmt.Println("===============")
-			for _, v := range r.tasks {
+			for _, v := range tasks {
 				fmt.Println(pointer.Get(v))
 			}
 
-			for _, task := range r.tasks {
-				if task.Deadline.Unix() <= time.Now().Unix() {
-					fmt.Println("to delete:", strconv.Itoa(int(task.ChatID)), strconv.Itoa(task.MessageID))
+			for _, task := range tasks {
+				fmt.Println("to delete:", task.ChatID, task.MesssageID)
 
-					err := r.DeleteMsg(strconv.Itoa(int(task.ChatID)), strconv.Itoa(task.MessageID))
-					if err != nil {
-						fmt.Println("DELETE MSG FAILED:", err.Error())
-					}
-					delete(r.tasks, task.MessageID)
+				err := r.DeleteMsg(task.ChatID, task.MesssageID)
+				if err != nil {
+					fmt.Println("DELETE MSG FAILED:", err.Error())
 				}
+				r.db.RemoveToDelete(&entity.ToDeleteTask{
+					ChatID:     task.ChatID,
+					MesssageID: task.MesssageID,
+					DeleteAt:   task.DeleteAt,
+				})
+
 			}
 		}
 	}
@@ -111,15 +111,13 @@ func (r *BotRepo) Processor() {
 }
 
 func (r *BotRepo) Stop() {
-	for _, task := range r.tasks {
-		r.DeleteMsg(strconv.Itoa(int(task.ChatID)), strconv.Itoa(task.MessageID))
-	}
-
 	r.notify <- struct{}{}
 }
 
 func (r *BotRepo) SetToQueue(task *TaskToDelete) {
-	r.m.Lock()
-	defer r.m.Unlock()
-	r.tasks[task.MessageID] = task
+	r.db.SetToDelete(&entity.ToDeleteTask{
+		ChatID:     strconv.Itoa(int(task.ChatID)),
+		MesssageID: strconv.Itoa(task.MessageID),
+		DeleteAt:   task.Deadline,
+	})
 }
