@@ -16,14 +16,14 @@ const (
 type BotRepo struct {
 	bot    *tgbotapi.BotAPI
 	notify chan struct{}
-	tasks  map[string]*TaskToDelete
+	tasks  []*TaskToDelete
 }
 
 func NewBotRepo(bot *tgbotapi.BotAPI) BotModel {
 	return &BotRepo{
 		bot:    bot,
 		notify: make(chan struct{}, 1),
-		tasks:  make(map[string]*TaskToDelete),
+		tasks:  make([]*TaskToDelete, 0, 1),
 	}
 }
 
@@ -88,15 +88,19 @@ func (r *BotRepo) Processor() {
 			fmt.Println("r.tasks")
 			fmt.Println(r.tasks)
 			fmt.Println("r.tasks")
+
+			buf := make([]*TaskToDelete, 0, len(r.tasks))
 			for _, task := range r.tasks {
 				if task.Deadline.Unix() <= time.Now().Unix() {
 					err := r.DeleteMsg(strconv.Itoa(int(task.ChatID)), strconv.Itoa(task.MessageID))
 					if err != nil {
 						fmt.Println("DELETE MSG FAILED:", err.Error())
 					}
-					delete(r.tasks, fmt.Sprintf("%d_%d", task.MessageID, task.ChatID))
+				} else {
+					buf = append(buf, task)
 				}
 			}
+			r.tasks = buf
 		}
 	}
 
@@ -111,6 +115,5 @@ func (r *BotRepo) Stop() {
 }
 
 func (r *BotRepo) SetToQueue(task *TaskToDelete) {
-	r.tasks[fmt.Sprintf("%d_%d", task.MessageID, task.ChatID)] = task
-	fmt.Println(r.tasks)
+	r.tasks = append(r.tasks, task)
 }
