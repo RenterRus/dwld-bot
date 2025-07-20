@@ -65,18 +65,16 @@ func (r *BotRepo) SendMessage(chatID, message string) {
 		return
 	}
 
-	defer func() {
+	/*defer func() {
 		r.DeleteMsg(strconv.Itoa(int(res.Chat.ID)), strconv.Itoa(res.MessageID))
 	}()
 
-	t := time.NewTimer(time.Minute * TIMEOUT_DELETE_MSG)
-
-	select {
-	case <-r.notify:
-		return
-	case <-t.C:
-		return
-	}
+	time.Sleep(time.Minute * TIMEOUT_DELETE_MSG)*/
+	r.SetToQueue(&TaskToDelete{
+		ChatID:    res.Chat.ID,
+		MessageID: res.MessageID,
+		Deadline:  time.Now().Add(time.Minute),
+	})
 }
 
 func (r *BotRepo) Processor() {
@@ -108,10 +106,11 @@ func (r *BotRepo) Stop() {
 	for _, task := range r.tasks {
 		r.DeleteMsg(strconv.Itoa(int(task.ChatID)), strconv.Itoa(task.MessageID))
 	}
-	r.notify <- struct{}{}
+
 	r.notify <- struct{}{}
 }
 
 func (r *BotRepo) SetToQueue(task *TaskToDelete) {
 	r.tasks[task.MessageID] = task
+	fmt.Println(r.tasks)
 }
