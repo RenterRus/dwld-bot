@@ -16,14 +16,14 @@ const (
 type BotRepo struct {
 	bot    *tgbotapi.BotAPI
 	notify chan struct{}
-	tasks  []*TaskToDelete
+	tasks  map[int]*TaskToDelete
 }
 
 func NewBotRepo(bot *tgbotapi.BotAPI) BotModel {
 	return &BotRepo{
 		bot:    bot,
 		notify: make(chan struct{}, 1),
-		tasks:  make([]*TaskToDelete, 0, 1),
+		tasks:  make(map[int]*TaskToDelete),
 	}
 }
 
@@ -65,16 +65,11 @@ func (r *BotRepo) SendMessage(chatID, message string) {
 		return
 	}
 
-	/*defer func() {
+	defer func() {
 		r.DeleteMsg(strconv.Itoa(int(res.Chat.ID)), strconv.Itoa(res.MessageID))
 	}()
 
-	time.Sleep(time.Minute * TIMEOUT_DELETE_MSG)*/
-	r.SetToQueue(&TaskToDelete{
-		ChatID:    res.Chat.ID,
-		MessageID: res.MessageID,
-		Deadline:  time.Now().Add(time.Minute),
-	})
+	time.Sleep(time.Minute * TIMEOUT_DELETE_MSG)
 }
 
 func (r *BotRepo) Processor() {
@@ -85,24 +80,15 @@ func (r *BotRepo) Processor() {
 		case <-r.notify:
 			return
 		case <-t.C:
-			fmt.Println("r.tasks")
-			for _, v := range r.tasks {
-				fmt.Println(*v)
-			}
-			fmt.Println("r.tasks")
-
-			buf := make([]*TaskToDelete, 0, len(r.tasks))
 			for _, task := range r.tasks {
 				if task.Deadline.Unix() <= time.Now().Unix() {
 					err := r.DeleteMsg(strconv.Itoa(int(task.ChatID)), strconv.Itoa(task.MessageID))
 					if err != nil {
 						fmt.Println("DELETE MSG FAILED:", err.Error())
 					}
-				} else {
-					buf = append(buf, task)
+					delete(r.tasks, task.MessageID)
 				}
 			}
-			r.tasks = buf
 		}
 	}
 
@@ -117,5 +103,5 @@ func (r *BotRepo) Stop() {
 }
 
 func (r *BotRepo) SetToQueue(task *TaskToDelete) {
-	r.tasks = append(r.tasks, task)
+	r.tasks[task.MessageID] = task
 }
