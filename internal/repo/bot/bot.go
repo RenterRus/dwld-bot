@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/AlekSi/pointer"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -88,8 +89,15 @@ func (r *BotRepo) Processor() {
 		case <-r.notify:
 			return
 		case <-t.C:
+			fmt.Println("===============")
+			for _, v := range r.tasks {
+				fmt.Println(pointer.Get(v))
+			}
+
 			for _, task := range r.tasks {
 				if task.Deadline.Unix() <= time.Now().Unix() {
+					fmt.Println("to delete:", strconv.Itoa(int(task.ChatID)), strconv.Itoa(task.MessageID))
+
 					err := r.DeleteMsg(strconv.Itoa(int(task.ChatID)), strconv.Itoa(task.MessageID))
 					if err != nil {
 						fmt.Println("DELETE MSG FAILED:", err.Error())
