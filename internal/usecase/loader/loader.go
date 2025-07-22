@@ -44,13 +44,13 @@ func (l *LoaderCase) Processor(ctx context.Context) {
 			tasks, err := l.db.LoadTasks(entity.ByTime, entity.TaskModel{})
 			if err != nil {
 				fmt.Println("Processor.LoadTasks", err)
-				continue
+				break
 			}
 
 			hosts, err := l.db.LoadServers()
 			if err != nil {
 				fmt.Println("Processor.LoadServers", err)
-				continue
+				break
 			}
 
 			servers := make(map[string]*entity.ServerModel)

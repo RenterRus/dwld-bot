@@ -54,7 +54,7 @@ func (d *DB) Exec(query string, args ...any) (sql.Result, error) {
 	res, err := d.conn.Exec(query, args...)
 	if err != nil {
 		for i := range MAX_RETRY {
-			fmt.Printf("Retry %d of %d", (i + 1), MAX_RETRY)
+			fmt.Printf("Retry %d of %d\n", (i + 1), MAX_RETRY)
 			d.close()
 			res, err = d.conn.Exec(query, args...)
 			if err == nil {
