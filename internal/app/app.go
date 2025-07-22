@@ -33,7 +33,8 @@ func NewApp(configPath string) error {
 		return fmt.Errorf("ReadConfig: %w", err)
 	}
 
-	db := persistent.NewSQLRepo(sqldb.NewDB(conf.DB.PathToDB, conf.DB.NameDB))
+	dbconn := sqldb.NewDB(conf.DB.PathToDB, conf.DB.NameDB)
+	db := persistent.NewSQLRepo(dbconn)
 	downloadUsecases := bot.NewBotUsecases(db)
 
 	bot := botserver.NewBot(telegram.BotConfig{
@@ -69,6 +70,7 @@ func NewApp(configPath string) error {
 
 	bot.Stop()
 	upload.Stop()
+	dbconn.Close()
 	err = grpcServer.Shutdown()
 	if err != nil {
 		log.Fatal(fmt.Errorf("app - Run - grpcServer.Shutdown: %w", err))
