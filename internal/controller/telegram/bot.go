@@ -244,7 +244,7 @@ func (b *Bot) Processor(ctx context.Context) {
 
 						for n, task := range v.Tasks {
 							queues.WriteString(fmt.Sprintf("G%d|L%d: [%s][%d][%.2f][%.2f/%.2f][%s][%s] TO:[%s] %s\n", (i + 1), (n + 1), task.Status, int(task.TargetQuantity),
-								task.Procentage, task.TotalSize, task.CurrentSize, task.Message, task.Link, task.MoveTo, task.Filename))
+								task.Procentage, task.CurrentSize, task.TotalSize, task.Message, task.Link, task.MoveTo, task.Filename))
 						}
 
 						b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("%s\n%s", sensors.String(), queues.String())))
