@@ -59,7 +59,7 @@ func NewApp(configPath string) error {
 
 	// Waiting signal
 	interrupt := make(chan os.Signal, 1)
-	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM, syscall.SIGKILL, syscall.SIGSTOP, syscall.SIGHUP)
+	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM, syscall.SIGHUP)
 
 	select {
 	case s := <-interrupt:
