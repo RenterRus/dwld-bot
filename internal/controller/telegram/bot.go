@@ -270,10 +270,7 @@ func (b *Bot) Processor(ctx context.Context) {
 
 					resp := strings.Builder{}
 					lastStatus := ""
-					for n, v := range queue {
-						if n > 0 {
-							resp.WriteString("\n")
-						}
+					for _, v := range queue {
 						if lastStatus != v.Status {
 							resp.WriteString("\n")
 						}
