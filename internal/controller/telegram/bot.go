@@ -243,7 +243,10 @@ func (b *Bot) Processor(ctx context.Context) {
 						sensors.WriteString("\n")
 
 						for n, task := range v.Tasks {
-							queues.WriteString(fmt.Sprintf("G%d|L%d: [%s][%d][%.2f][%.2f/%.2f][ %s ][%s] TO:[%s] %s\n", (i + 1), (n + 1), task.Status, int(task.TargetQuantity),
+							if n > 0 {
+								queues.WriteString("\n")
+							}
+							queues.WriteString(fmt.Sprintf("**G%d|L%d**: [%s][%d][%.2f][%.2f/%.2f][ %s ][%s] TO: [%s] %s\n", (i + 1), (n + 1), task.Status, int(task.TargetQuantity),
 								task.Procentage, task.CurrentSize, task.TotalSize, task.Link, task.Filename, task.MoveTo, task.Message))
 						}
 
@@ -264,8 +267,17 @@ func (b *Bot) Processor(ctx context.Context) {
 					}
 
 					resp := strings.Builder{}
-					for _, v := range queue {
-						resp.WriteString(fmt.Sprintf("[%s][%s][%s][%s][%s]\n", v.Status, v.TargetQuality, pointer.Get(v.Name), v.Link, pointer.Get(v.Message)))
+					lastStatus := ""
+					for n, v := range queue {
+						if n > 0 {
+							resp.WriteString("\n")
+						}
+						if lastStatus != v.Status {
+							resp.WriteString("\n")
+						}
+
+						lastStatus = v.Status
+						resp.WriteString(fmt.Sprintf("**[%s]**[%s][%s][%s][%s]\n", v.Status, v.TargetQuality, pointer.Get(v.Name), v.Link, pointer.Get(v.Message)))
 					}
 					msg.Text = resp.String()
 				}
