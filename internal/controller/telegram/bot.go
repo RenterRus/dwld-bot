@@ -246,7 +246,7 @@ func (b *Bot) Processor(ctx context.Context) {
 							if n > 0 {
 								queues.WriteString("\n")
 							}
-							queues.WriteString(fmt.Sprintf("**G%d|L%d**: [%s][%d][%.2f][%.2f/%.2f][ %s ][%s] TO: [%s] %s\n", (i + 1), (n + 1), task.Status, int(task.TargetQuantity),
+							queues.WriteString(fmt.Sprintf("<b>G%d|L%d</b>: [%s][%d][%.2f][%.2f/%.2f][ %s ][%s] TO: [%s] %s\n", (i + 1), (n + 1), task.Status, int(task.TargetQuantity),
 								task.Procentage, task.CurrentSize, task.TotalSize, task.Link, task.Filename, task.MoveTo, task.Message))
 						}
 
@@ -277,7 +277,7 @@ func (b *Bot) Processor(ctx context.Context) {
 						}
 
 						lastStatus = v.Status
-						resp.WriteString(fmt.Sprintf("**[%s]**[%s][%s][%s][%s]\n", v.Status, v.TargetQuality, pointer.Get(v.Name), v.Link, pointer.Get(v.Message)))
+						resp.WriteString(fmt.Sprintf("[<b>%s</b>][%s][%s][%s][%s]\n", v.Status, v.TargetQuality, pointer.Get(v.Name), v.Link, pointer.Get(v.Message)))
 					}
 					msg.Text = resp.String()
 				}
