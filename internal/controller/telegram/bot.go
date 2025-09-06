@@ -237,10 +237,12 @@ func (b *Bot) Processor(ctx context.Context) {
 						queues := strings.Builder{}
 						queues.WriteString("QUEUE (CACHE)\n")
 						b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Тут отображаются очереди и показания датчиков скачивальщиков. Кнопка \"Показать очередь\" покажет очередь по всей системе с включением очереди бота"))
+						time.Sleep(time.Second * FAST_DELETE_TIMEOUT)
 
 						for i, v := range status {
 							sensors.WriteString(fmt.Sprintf("%d of %d: %s\n", (i + 1), len(status), v.ServerName))
 							sensors.WriteString(v.Sensors)
+							time.Sleep(time.Second * FAST_DELETE_TIMEOUT)
 
 							msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, sensors.String())
 							msg.ParseMode = tgbotapi.ModeHTML
