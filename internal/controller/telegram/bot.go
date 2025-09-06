@@ -334,7 +334,8 @@ func (b *Bot) sendMessage(c tgbotapi.Chattable) {
 	var err error
 	if mInfo, err = b.bot.Send(c); err != nil {
 		fmt.Println("NewMessage", err)
-	} else {
+	}
+	if mInfo.Chat != nil && mInfo.Chat.ID > 0 && mInfo.MessageID > 0 {
 		b.deleteMessage.SetToQueue(&rbot.TaskToDelete{
 			ChatID:    mInfo.Chat.ID,
 			MessageID: mInfo.MessageID,
