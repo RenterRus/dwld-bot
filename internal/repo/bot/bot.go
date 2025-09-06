@@ -30,24 +30,24 @@ func NewBotRepo(bot *tgbotapi.BotAPI, db persistent.SQLRepo) BotModel {
 }
 
 func (r *BotRepo) DeleteMsg(userID, messageID string) error {
-	user := 0
-	message := 0
-	var err error
+	go func(userID, messageID string) {
+		user := 0
+		message := 0
+		var err error
 
-	if user, err = strconv.Atoi(userID); err != nil {
-		fmt.Printf("DeleteMsg.ParseInt(userID): %s\n", err.Error())
-		return fmt.Errorf("DeleteMsg.ParseInt(userID): %w", err)
-	}
+		if user, err = strconv.Atoi(userID); err != nil {
+			fmt.Println(fmt.Errorf("DeleteMsg.ParseInt(userID): %w", err))
+		}
 
-	if message, err = strconv.Atoi(messageID); err != nil {
-		fmt.Printf("DeleteMsg.ParseInt(messageID): %s\n", err.Error())
-		return fmt.Errorf("DeleteMsg.ParseInt(messageID): %w", err)
-	}
+		if message, err = strconv.Atoi(messageID); err != nil {
+			fmt.Println(fmt.Errorf("DeleteMsg.ParseInt(messageID): %w", err))
+		}
 
-	_, err = r.bot.Request(tgbotapi.NewDeleteMessage(int64(user), message))
-	if err != nil {
-		return fmt.Errorf("DeleteMsg: %w", err)
-	}
+		_, err = r.bot.Request(tgbotapi.NewDeleteMessage(int64(user), message))
+		if err != nil {
+			fmt.Println(fmt.Errorf("DeleteMsg: %w", err))
+		}
+	}(userID, messageID)
 
 	return nil
 }

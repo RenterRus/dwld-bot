@@ -2,6 +2,7 @@ package botserver
 
 import (
 	"context"
+	"time"
 
 	"github.com/RenterRus/dwld-bot/internal/controller/telegram"
 	"github.com/RenterRus/dwld-bot/internal/repo/persistent"
@@ -9,6 +10,9 @@ import (
 )
 
 // Поднимаем бота
+const (
+	LIFETIME = 3
+)
 
 type Bot struct {
 	bot    telegram.BotModel
@@ -28,9 +32,18 @@ func (b *Bot) Bot() *tgbotapi.BotAPI {
 }
 
 func (b *Bot) Start() {
-	ctx, cncl := context.WithCancel(context.Background())
+	var ctx context.Context
+	var cncl context.CancelFunc
+	ticker := time.NewTicker(time.Hour * LIFETIME)
+
 	go func() {
-		b.bot.Processor(ctx)
+		for {
+			ctx, cncl = context.WithCancel(context.Background())
+			go b.bot.Processor(ctx)
+			<-ticker.C
+			cncl()
+			time.Sleep(time.Second * 5)
+		}
 	}()
 
 	<-b.notify
