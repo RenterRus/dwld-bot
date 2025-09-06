@@ -330,17 +330,15 @@ func (b *Bot) Processor(ctx context.Context) {
 }
 
 func (b *Bot) sendMessage(c tgbotapi.Chattable) {
-	go func(chat tgbotapi.Chattable) {
-		var mInfo tgbotapi.Message
-		var err error
-		if mInfo, err = b.bot.Send(chat); err != nil {
-			fmt.Println("NewMessage", err)
-		} else {
-			b.deleteMessage.SetToQueue(&rbot.TaskToDelete{
-				ChatID:    mInfo.Chat.ID,
-				MessageID: mInfo.MessageID,
-				Deadline:  time.Now().Add(time.Minute * DEFAULT_TIMEOUT),
-			})
-		}
-	}(c)
+	var mInfo tgbotapi.Message
+	var err error
+	if mInfo, err = b.bot.Send(c); err != nil {
+		fmt.Println("NewMessage", err)
+	} else {
+		b.deleteMessage.SetToQueue(&rbot.TaskToDelete{
+			ChatID:    mInfo.Chat.ID,
+			MessageID: mInfo.MessageID,
+			Deadline:  time.Now().Add(time.Minute * DEFAULT_TIMEOUT),
+		})
+	}
 }
