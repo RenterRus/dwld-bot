@@ -48,6 +48,7 @@ func (b *Bot) Start() {
 
 	<-b.notify
 	cncl()
+	time.Sleep(time.Second * 3)
 }
 
 func (b *Bot) Stop() {
