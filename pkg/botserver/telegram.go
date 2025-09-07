@@ -2,6 +2,7 @@ package botserver
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/RenterRus/dwld-bot/internal/controller/telegram"
@@ -11,7 +12,7 @@ import (
 
 // Поднимаем бота
 const (
-	LIFETIME = 3
+	LIFETIME = 1
 )
 
 type Bot struct {
@@ -38,9 +39,11 @@ func (b *Bot) Start() {
 
 	go func() {
 		for {
+			fmt.Println("Bot starting")
 			ctx, cncl = context.WithCancel(context.Background())
 			go b.bot.Processor(ctx)
 			<-ticker.C
+			fmt.Println("Bot stopping")
 			cncl()
 			time.Sleep(time.Second * 5)
 		}
