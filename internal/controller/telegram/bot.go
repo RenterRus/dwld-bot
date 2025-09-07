@@ -242,12 +242,12 @@ func (b *Bot) Processor(ctx context.Context) {
 						for i, v := range status {
 							sensors.WriteString(fmt.Sprintf("%d of %d: %s\n", (i + 1), len(status), v.ServerName))
 							sensors.WriteString(v.Sensors)
-							time.Sleep(time.Second * FAST_DELETE_TIMEOUT)
 
 							msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, sensors.String())
 							msg.ParseMode = tgbotapi.ModeHTML
 							b.sendMessage(msg)
 							sensors.Reset()
+							time.Sleep(time.Second * FAST_DELETE_TIMEOUT)
 
 							for n, task := range v.Tasks {
 								if n > 0 {
