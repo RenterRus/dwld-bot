@@ -202,10 +202,12 @@ func (b *Bot) Processor(ctx context.Context) {
 			} else if update.CallbackQuery != nil { // Если пришел колбэк
 				callback := tgbotapi.NewCallback(update.CallbackQuery.ID, update.CallbackQuery.Data)
 				if _, err := b.bot.Request(callback); err != nil {
-					fmt.Println("update.CallbackQuery", err)
+					fmt.Println("update.CallbackQuery:", err)
 				}
 
 				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "")
+
+				fmt.Printf("%s: %s\n", update.Message.From.UserName, update.CallbackQuery.Data)
 
 				switch update.CallbackQuery.Data {
 				case RemoveFromQueue:
