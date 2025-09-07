@@ -207,7 +207,7 @@ func (b *Bot) Processor(ctx context.Context) {
 
 				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "")
 
-				fmt.Printf("%s: %s\n", update.Message.From.UserName, update.CallbackQuery.Data)
+				fmt.Printf("%s: %s\n", update.CallbackQuery.Message.Chat.UserName, update.CallbackQuery.Data)
 
 				switch update.CallbackQuery.Data {
 				case RemoveFromQueue:
