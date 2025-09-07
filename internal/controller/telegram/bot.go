@@ -21,6 +21,7 @@ import (
 const (
 	DEFAULT_QUALITY     = 4320 // 8K
 	FAST_DELETE_TIMEOUT = 1
+	TIME_SHIFT_MSG      = 500
 	DEFAULT_TIMEOUT     = FAST_DELETE_TIMEOUT
 )
 
@@ -241,7 +242,7 @@ func (b *Bot) Processor(ctx context.Context) {
 						queues := strings.Builder{}
 						queues.WriteString("QUEUE (CACHE)\n")
 						b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Тут отображаются очереди и показания датчиков скачивальщиков. Кнопка \"Показать очередь\" покажет очередь по всей системе с включением очереди бота"))
-						time.Sleep(time.Second * FAST_DELETE_TIMEOUT)
+						time.Sleep(time.Millisecond * TIME_SHIFT_MSG)
 
 						for i, v := range status {
 							sensors.WriteString(fmt.Sprintf("%d of %d: %s\n", (i + 1), len(status), v.ServerName))
@@ -251,7 +252,7 @@ func (b *Bot) Processor(ctx context.Context) {
 							msg.ParseMode = tgbotapi.ModeHTML
 							b.sendMessage(msg)
 							sensors.Reset()
-							time.Sleep(time.Second * FAST_DELETE_TIMEOUT)
+							time.Sleep(time.Millisecond * TIME_SHIFT_MSG)
 
 							for n, task := range v.Tasks {
 								if n > 0 {
