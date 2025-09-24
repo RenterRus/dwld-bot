@@ -221,6 +221,10 @@ func (b *Bot) Processor(ctx context.Context) {
 					if err != nil {
 						msg.Text = fmt.Sprintf("Ошибка получения всей очереди: %s", err.Error())
 					} else {
+						if len(queue) == 0 {
+							msg.Text = "Ссылок нет"
+							break
+						}
 						resp := strings.Builder{}
 						for _, v := range queue {
 							resp.WriteString(fmt.Sprintf("\"%s\",\n", v.Link))
