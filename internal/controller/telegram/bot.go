@@ -14,6 +14,7 @@ import (
 	rbot "github.com/RenterRus/dwld-bot/internal/repo/bot"
 	"github.com/RenterRus/dwld-bot/internal/repo/persistent"
 	botusecase "github.com/RenterRus/dwld-bot/internal/usecase/bot"
+	"github.com/RenterRus/dwld-bot/internal/usecase/loader"
 	"github.com/go-playground/validator/v10"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -52,7 +53,7 @@ func NewBot(conf BotConfig, db persistent.SQLRepo) BotModel {
 		defaultQuality: DEFAULT_QUALITY,
 		adminChatID:    conf.AdminChatID,
 		allowedChatID:  conf.AllowedChatID,
-		botCase:        botusecase.NewBotUsecases(db),
+		botCase:        botusecase.NewBotUsecases(db, loader.NewLoader(db, rbot.NewBotRepo(bot, db))),
 		deleteMessage:  rbot.NewBotRepo(bot, db),
 	}
 }
@@ -161,7 +162,7 @@ func (b *Bot) Processor(ctx context.Context) {
 					} else {
 						isLinkInsert = true
 						//Ссылка встала в очередь
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] взята в работу", update.Message.Text))
+						msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] встала в очередь. Целевое качество %d. Для смены, нажмите на варианты ниже", update.Message.Text, DEFAULT_QUALITY))
 						//Прикрепляем клавитуру выбора качества для конкретной ссылки
 						msg.ReplyMarkup = b.qualityKeyboard(update.Message.Text)
 

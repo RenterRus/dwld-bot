@@ -9,16 +9,18 @@ import (
 	"github.com/RenterRus/dwld-bot/internal/entity"
 	"github.com/RenterRus/dwld-bot/internal/repo/dwld"
 	"github.com/RenterRus/dwld-bot/internal/repo/persistent"
+	"github.com/RenterRus/dwld-bot/internal/usecase/loader"
 )
 
 type BotCases struct {
-	db   persistent.SQLRepo
-	dwld dwld.DWLDModel
+	db     persistent.SQLRepo
+	loader loader.Loader
 }
 
-func NewBotUsecases(db persistent.SQLRepo) Bot {
+func NewBotUsecases(db persistent.SQLRepo, loader loader.Loader) Bot {
 	return &BotCases{
-		db: db,
+		db:     db,
+		loader: loader,
 	}
 }
 
@@ -81,7 +83,19 @@ func (b *BotCases) ViewTasks(ctx context.Context, userID string) ([]*entity.Task
 	return resp, nil
 }
 
+// !!!
 func (b *BotCases) DeleteTask(ctx context.Context, link string) {
+	tsk, err := b.db.LoadTasks(entity.ByLink, entity.TaskModel{
+		Link: link,
+	})
+	if err != nil {
+		fmt.Printf("DeleteTask(LoadTasks): %s", err.Error())
+	} else {
+		for _, v := range tsk {
+			b.loader.ForceDelete(v.UserID, v.MessageID)
+		}
+	}
+
 	if err := b.db.DeleteTask(link); err != nil {
 		fmt.Printf("DeleteTask(DelteTask): %s\n", err.Error())
 	}

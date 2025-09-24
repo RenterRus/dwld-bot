@@ -35,21 +35,22 @@ func NewApp(configPath string) error {
 
 	dbconn := sqldb.NewDB(conf.DB.PathToDB, conf.DB.NameDB)
 	db := persistent.NewSQLRepo(dbconn)
-	downloadUsecases := bot.NewBotUsecases(db)
 
-	bot := botserver.NewBot(telegram.BotConfig{
+	botsrv := botserver.NewBot(telegram.BotConfig{
 		Token:         conf.TG.Token,
 		AllowedChatID: conf.TG.AllowedIDs,
 		AdminChatID:   conf.TG.Admins,
 	}, db)
 
-	upload := loader.NewLoader(db, rbot.NewBotRepo(bot.Bot(), db))
+	upload := loader.NewLoader(db, rbot.NewBotRepo(botsrv.Bot(), db))
+
+	downloadUsecases := bot.NewBotUsecases(db, upload)
 
 	go func() {
 		upload.Processor(context.Background())
 	}()
 	go func() {
-		bot.Start()
+		botsrv.Start()
 	}()
 
 	// gRPC Server
@@ -68,7 +69,7 @@ func NewApp(configPath string) error {
 		log.Fatal(fmt.Errorf("app - Run - grpcServer.Notify: %w", err))
 	}
 
-	bot.Stop()
+	botsrv.Stop()
 	upload.Stop()
 	dbconn.Close()
 	err = grpcServer.Shutdown()

@@ -35,6 +35,12 @@ func (l *LoaderCase) Stop() {
 	l.notify <- struct{}{}
 }
 
+func (l *LoaderCase) ForceDelete(userID, messageID string) {
+	if err := l.bot.DeleteMsg(userID, messageID); err != nil {
+		fmt.Printf("ForceDelete(DeleteMsg): %s\n", err.Error())
+	}
+}
+
 func (l *LoaderCase) Processor(ctx context.Context) {
 	t := time.NewTicker(time.Second * SEND_TIMEOUT)
 
