@@ -335,8 +335,10 @@ func (b *Bot) Processor(ctx context.Context) {
 	}()
 
 	<-ctx.Done()
-	b.bot.StopReceivingUpdates()
 	b.toAdmins("Бот отключен")
+
+	time.Sleep(time.Second * 2)
+	b.bot.StopReceivingUpdates()
 	time.Sleep(time.Second * 3)
 }
 
