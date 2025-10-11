@@ -292,7 +292,7 @@ func (b *Bot) Processor(ctx context.Context) {
 							}
 
 							lastStatus = v.Status
-							resp.WriteString(fmt.Sprintf("[<b>%s</b>][%s][%s][%s][%s]\n", v.Status, v.TargetQuality, pointer.Get(v.Name), v.Link, pointer.Get(v.Message)))
+							resp.WriteString(fmt.Sprintf("[<b>%s</b>][%s][%s] %s\n", v.Status, v.TargetQuality, pointer.Get(v.Name), v.Link))
 						}
 						msg.Text = resp.String()
 						msg.ParseMode = tgbotapi.ModeHTML
