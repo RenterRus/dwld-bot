@@ -63,7 +63,9 @@ func (p *persistentRepo) LoadTasks(by entity.LoadBy, task entity.TaskModel) ([]*
 	}
 
 	defer func() {
-		rows.Close()
+		if err := rows.Close(); err != nil {
+			fmt.Println("LoadTask: ", err.Error())
+		}
 	}()
 
 	resp := make([]*entity.TaskModel, 0)
@@ -125,7 +127,9 @@ func (p *persistentRepo) LoadServers() ([]*entity.ServerModel, error) {
 	}
 
 	defer func() {
-		rows.Close()
+		if err := rows.Close(); err != nil {
+			fmt.Println("LoadTask: ", err.Error())
+		}
 	}()
 
 	resp := make([]*entity.ServerModel, 0)
@@ -165,7 +169,9 @@ func (p *persistentRepo) GetToDelete() []*entity.ToDeleteTask {
 	}
 
 	defer func() {
-		rows.Close()
+		if err := rows.Close(); err != nil {
+			fmt.Println("LoadTask: ", err.Error())
+		}
 	}()
 
 	resp := make([]*entity.ToDeleteTask, 0)

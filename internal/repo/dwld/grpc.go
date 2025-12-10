@@ -17,7 +17,6 @@ import (
 
 type DownloaderRepo struct {
 	client     dwl.DownloaderClient
-	cc         *grpc.ClientConn
 	serverName string
 }
 

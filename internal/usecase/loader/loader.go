@@ -72,7 +72,11 @@ func (l *LoaderCase) Processor(ctx context.Context) {
 					// Почему-то не смогли распарсить ссылку. Пробуем пометить ошибку и идем к следующей ссылке
 					fmt.Println("Processor.url.Parse", err)
 					v.ErrorMsg = err.Error()
-					l.db.SetTask(*v)
+
+					if err := l.db.SetTask(*v); err != nil {
+						fmt.Println("LoadTask: ", err.Error())
+					}
+
 					continue
 				}
 
@@ -94,7 +98,9 @@ func (l *LoaderCase) Processor(ctx context.Context) {
 						v.ErrorMsg = err.Error()
 						// Если не смогли вставить ссылку в скачивальщик, то откидываем на 3 итераций вперед перед повтором (но вначале пройдет по остальным подходящим серверам)
 						v.SendAt = time.Now().Add(time.Second * (3 * SEND_TIMEOUT))
-						l.db.SetTask(*v)
+						if err := l.db.SetTask(*v); err != nil {
+							fmt.Println("LoadTask: ", err.Error())
+						}
 						continue // Идем в следующий сервер
 					}
 
@@ -102,14 +108,18 @@ func (l *LoaderCase) Processor(ctx context.Context) {
 					if err := l.bot.DeleteMsg(v.UserID, v.MessageID); err != nil {
 						fmt.Printf("Loader(DeleteMsg): %s\n", err.Error())
 						v.ErrorMsg = err.Error()
-						l.db.SetTask(*v)
+						if err := l.db.SetTask(*v); err != nil {
+							fmt.Println("LoadTask: ", err.Error())
+						}
 					}
 
 					// Удаляем таску из базы, если удалось отправить в скачивальщик
 					if err := l.db.DeleteTask(v.Link); err != nil {
 						fmt.Printf("Loader(DeleteTask): %s", err.Error())
 						v.ErrorMsg = err.Error()
-						l.db.SetTask(*v)
+						if err := l.db.SetTask(*v); err != nil {
+							fmt.Println("LoadTask: ", err.Error())
+						}
 					}
 
 					fmt.Printf("Ссылка [%s] отправлена в скачивальщик %s с целевым качеством %d\n", v.Link, conf.Name, v.Quality)

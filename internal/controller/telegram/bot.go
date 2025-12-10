@@ -185,7 +185,7 @@ func (b *Bot) Processor(ctx context.Context) {
 					fmt.Println("Send", err)
 				}
 				if isLinkInsert {
-					b.botCase.SetTask(entity.TaskModel{
+					if err := b.botCase.SetTask(entity.TaskModel{
 						Link:      update.Message.Text,
 						Quality:   DEFAULT_QUALITY,
 						UserName:  update.Message.From.UserName,
@@ -193,7 +193,9 @@ func (b *Bot) Processor(ctx context.Context) {
 						MessageID: strconv.Itoa(mInfo.MessageID),
 						ErrorMsg:  "",
 						SendAt:    time.Now().Add(time.Minute * DEFAULT_TIMEOUT),
-					})
+					}); err != nil {
+						fmt.Println("SetTask: ", err.Error())
+					}
 				} else {
 					b.deleteMessage.SetToQueue(&rbot.TaskToDelete{
 						ChatID:    update.Message.Chat.ID,
