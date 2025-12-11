@@ -11,7 +11,7 @@ services:
     networks:
       - dwld
     volumes:
-      - /home/artur/pets/bot.yaml:/app/bot.yaml
+      - /bot.yaml:/app/bot.yaml
 
 
 networks:
