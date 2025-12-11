@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    container_name: "bot"
+
+    networks:
+      - dwld
+    volumes:
+      - /home/artur/pets/bot.yaml:/app/bot.yaml
+
+
+networks:
+  dwld:
+    driver: bridge
