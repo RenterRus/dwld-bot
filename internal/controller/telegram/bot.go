@@ -226,6 +226,8 @@ func (b *Bot) Processor(ctx context.Context) {
 						if len(queue) == 0 {
 							msg.Text = "Ссылок нет"
 							break
+						} else {
+							b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("Ссылок в работе: %d", len(queue))))
 						}
 						resp := strings.Builder{}
 						for _, v := range queue {
@@ -284,6 +286,8 @@ func (b *Bot) Processor(ctx context.Context) {
 					} else {
 						if len(queue) == 0 {
 							b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Все очереди свободны"))
+						} else {
+							b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("Ссылок в работе: %d", len(queue))))
 						}
 
 						resp := strings.Builder{}
