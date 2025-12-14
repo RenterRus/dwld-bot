@@ -1,17 +1,26 @@
 version: '3.8'
 
 services:
+  redis:
+    image: redis:latest
+    container_name: redis_container
+    ports:
+      - "7777:7777"
+    networks:
+      - dwld
   bot:
     build:
       context: ./dwld-bot
       dockerfile: Dockerfile
     restart: unless-stopped
     container_name: "bot"
-
+    depends_on:
+      - redis
     networks:
       - dwld
     volumes:
-      - /bot.yaml:/app/bot.yaml
+      - ../bot.yaml:/var/bot.yaml
+      - ../bot.db:/var/bot.db
 
   downloader:
     build:
@@ -20,23 +29,27 @@ services:
     restart: unless-stopped
     container_name: "downloader"
     depends_on:
+      - redis
       - bot
     networks:
       - dwld
     volumes:
-      - /downloader.yaml:/app/downloader.yaml
+      - ../downloader.yaml:/var/downloader.yaml
+      - ../downloader.db:/var/downloader.db
 
-  ftp_sender:
+  ftp:
     build:
       context: ./dwld-ftp-sender
       dockerfile: Dockerfile
     restart: unless-stopped
     container_name: "ftp_sender"
-
+    depends_on:
+      - redis
     networks:
       - dwld
     volumes:
-      - /ftp_sender.yaml:/app/ftp_sender.yaml
+      - ../ftp_sender.yaml:/var/ftp_sender.yaml
+      - ../ftp_sender.db:/var/ftp_sender.db
 
 
 networks:

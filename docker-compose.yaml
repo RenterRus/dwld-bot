@@ -11,7 +11,8 @@ services:
     networks:
       - dwld
     volumes:
-      - /bot.yaml:/app/bot.yaml
+      - ../bot.yaml:/var/bot.yaml
+      - ../bot.db:/var/bot.db
 
 
 networks:
