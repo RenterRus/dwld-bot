@@ -43,7 +43,22 @@ type Bot struct {
 }
 
 func NewBot(conf BotConfig, db persistent.SQLRepo) BotModel {
-	bot, err := tgbotapi.NewBotAPI(conf.Token)
+	var bot *tgbotapi.BotAPI
+	var err error
+
+	for i := range 100 {
+		fmt.Printf("ATTEMPT %d: ", i)
+
+		bot, err = tgbotapi.NewBotAPI(conf.Token)
+		if err != nil {
+			fmt.Printf("FAILED. %s\n\n", err.Error())
+			continue
+		}
+
+		fmt.Printf("COMPLETE.\n\n")
+		break
+	}
+
 	if err != nil {
 		panic(err)
 	}
