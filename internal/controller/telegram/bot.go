@@ -24,6 +24,7 @@ const (
 	FAST_DELETE_TIMEOUT = 1
 	TIME_SHIFT_MSG      = 500
 	DEFAULT_TIMEOUT     = FAST_DELETE_TIMEOUT
+	MAX_ATTEMPT         = 100
 )
 
 type BotConfig struct {
@@ -46,12 +47,13 @@ func NewBot(conf BotConfig, db persistent.SQLRepo) BotModel {
 	var bot *tgbotapi.BotAPI
 	var err error
 
-	for i := range 100 {
-		fmt.Printf("ATTEMPT %d: ", i)
+	for i := range MAX_ATTEMPT {
+		fmt.Printf("ATTEMPT %d of %d: ", (i + 1), MAX_ATTEMPT)
 
 		bot, err = tgbotapi.NewBotAPI(conf.Token)
 		if err != nil {
 			fmt.Printf("FAILED. %s\n\n", err.Error())
+			time.Sleep(time.Second)
 			continue
 		}
 
