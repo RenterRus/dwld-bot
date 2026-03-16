@@ -24,7 +24,7 @@ const (
 	FAST_DELETE_TIMEOUT = 1
 	TIME_SHIFT_MSG      = 500
 	DEFAULT_TIMEOUT     = FAST_DELETE_TIMEOUT
-	MAX_ATTEMPT         = 123
+	MAX_ATTEMPT         = 1234
 )
 
 type BotConfig struct {
