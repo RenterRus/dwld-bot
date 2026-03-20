@@ -59,7 +59,13 @@ func connect(proxyPool []string, token string) (*tgbotapi.BotAPI, error) {
 				proxyUrl, _ := url.Parse(v) // или mtproxy url
 				dialer, _ := proxy.FromURL(proxyUrl, proxy.Direct)
 
-				transport := &http.Transport{Dial: dialer.Dial}
+				transport := &http.Transport{
+					Dial:                  dialer.Dial,
+					IdleConnTimeout:       time.Minute,
+					TLSHandshakeTimeout:   time.Minute,
+					ResponseHeaderTimeout: time.Minute,
+					ExpectContinueTimeout: time.Minute,
+				}
 				httpClient := &http.Client{Transport: transport}
 
 				bot, err := tgbotapi.NewBotAPIWithClient(token, "https://api.telegram.org", httpClient)
