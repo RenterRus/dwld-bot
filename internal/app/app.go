@@ -40,6 +40,7 @@ func NewApp(configPath string) error {
 		Token:         conf.TG.Token,
 		AllowedChatID: conf.TG.AllowedIDs,
 		AdminChatID:   conf.TG.Admins,
+		// !!!
 	}, db)
 
 	upload := loader.NewLoader(db, rbot.NewBotRepo(botsrv.Bot(), db))

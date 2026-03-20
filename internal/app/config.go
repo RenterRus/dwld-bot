@@ -19,6 +19,7 @@ type TelegramCong struct {
 	Token      string   `validate:"required"`
 	AllowedIDs []string `validate:"required"`
 	Admins     []string `validate:"required"`
+	ProxyPool  []string
 }
 
 type DBLite struct {

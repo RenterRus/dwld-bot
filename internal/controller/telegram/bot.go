@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"sync"
@@ -17,6 +19,7 @@ import (
 	"github.com/RenterRus/dwld-bot/internal/usecase/loader"
 	"github.com/go-playground/validator/v10"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"golang.org/x/net/proxy"
 )
 
 const (
@@ -24,13 +27,15 @@ const (
 	FAST_DELETE_TIMEOUT = 1
 	TIME_SHIFT_MSG      = 500
 	DEFAULT_TIMEOUT     = FAST_DELETE_TIMEOUT
-	MAX_ATTEMPT         = 1234
+	MAX_ATTEMPT         = 12345
+	MAX_ATTEMPT_PROXY   = 3
 )
 
 type BotConfig struct {
 	Token         string
 	AllowedChatID []string
 	AdminChatID   []string
+	PoolProxy     []string
 }
 
 type Bot struct {
@@ -43,14 +48,35 @@ type Bot struct {
 	m              sync.Mutex
 }
 
-func NewBot(conf BotConfig, db persistent.SQLRepo) BotModel {
+func connect(proxyPool []string, token string) (*tgbotapi.BotAPI, error) {
 	var bot *tgbotapi.BotAPI
 	var err error
+	if len(proxyPool) > 0 {
+		for n, v := range proxyPool {
+			for i := range MAX_ATTEMPT_PROXY {
+				fmt.Printf("ATTEMPT PROXY (%d) %d of %d: ", n, (i + 1), MAX_ATTEMPT_PROXY)
+
+				proxyUrl, _ := url.Parse(v) // или mtproxy url
+				dialer, _ := proxy.FromURL(proxyUrl, proxy.Direct)
+
+				transport := &http.Transport{Dial: dialer.Dial}
+				httpClient := &http.Client{Transport: transport}
+
+				bot, err := tgbotapi.NewBotAPIWithClient(token, "https://api.telegram.org", httpClient)
+
+				if err == nil {
+					return bot, nil
+				}
+
+				time.Sleep(time.Millisecond * TIME_SHIFT_MSG)
+			}
+		}
+	}
 
 	for i := range MAX_ATTEMPT {
 		fmt.Printf("ATTEMPT %d of %d: ", (i + 1), MAX_ATTEMPT)
 
-		bot, err = tgbotapi.NewBotAPI(conf.Token)
+		bot, err = tgbotapi.NewBotAPI(token)
 		if err != nil {
 			fmt.Printf("FAILED. %s\n\n", err.Error())
 			time.Sleep(time.Millisecond * TIME_SHIFT_MSG)
@@ -60,6 +86,12 @@ func NewBot(conf BotConfig, db persistent.SQLRepo) BotModel {
 		fmt.Printf("COMPLETE.\n\n")
 		break
 	}
+
+	return bot, err
+}
+
+func NewBot(conf BotConfig, db persistent.SQLRepo) BotModel {
+	bot, err := connect(conf.PoolProxy, conf.Token)
 
 	if err != nil {
 		panic(err)
