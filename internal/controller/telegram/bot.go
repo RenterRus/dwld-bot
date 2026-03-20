@@ -54,7 +54,7 @@ func connect(proxyPool []string, token string) (*tgbotapi.BotAPI, error) {
 	if len(proxyPool) > 0 {
 		for n, v := range proxyPool {
 			for i := range MAX_ATTEMPT_PROXY {
-				fmt.Printf("ATTEMPT PROXY (%d) %d of %d: ", n, (i + 1), MAX_ATTEMPT_PROXY)
+				fmt.Printf("ATTEMPT %d of %d PROXY %d of %d : ", i+1, MAX_ATTEMPT_PROXY, n+1, len(proxyPool))
 
 				proxyUrl, _ := url.Parse(v) // или mtproxy url
 				dialer, _ := proxy.FromURL(proxyUrl, proxy.Direct)
