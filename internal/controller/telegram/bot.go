@@ -51,13 +51,23 @@ type Bot struct {
 func connect(proxyPool []string, token string) (*tgbotapi.BotAPI, error) {
 	var bot *tgbotapi.BotAPI
 	var err error
+
 	if len(proxyPool) > 0 {
 		for n, v := range proxyPool {
 			for i := range MAX_ATTEMPT_PROXY {
 				fmt.Printf("ATTEMPT %d of %d PROXY %d of %d : ", i+1, MAX_ATTEMPT_PROXY, n+1, len(proxyPool))
 
-				proxyUrl, _ := url.Parse(v) // или mtproxy url
-				dialer, _ := proxy.FromURL(proxyUrl, proxy.Direct)
+				proxyUrl, err := url.Parse(v) // или mtproxy url
+				if err != nil {
+					fmt.Println(err)
+					continue
+				}
+
+				dialer, err := proxy.FromURL(proxyUrl, proxy.Direct)
+				if err != nil {
+					fmt.Println(err)
+					continue
+				}
 
 				transport := &http.Transport{
 					Dial:                  dialer.Dial,
