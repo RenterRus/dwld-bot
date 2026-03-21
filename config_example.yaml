@@ -1,10 +1,15 @@
 grpc:
     host: "127.0.0.1"
     port: 9999
+    enable: false
+
+http:
+    host: "127.0.0.1"
+    port: 9988
     enable: true
 
 db:
-    pathtodb: "./db"
+    pathtodb: "./"
     namedb: "links.db"
 
 tg:

@@ -12,7 +12,7 @@ import (
 type Server struct {
 	Host   string `validate:"required"`
 	Port   int    `validate:"required"`
-	Enable bool   `validate:"required"`
+	Enable bool
 }
 
 type TelegramCong struct {
@@ -29,6 +29,7 @@ type DBLite struct {
 
 type Config struct {
 	GRPC Server
+	HTTP Server
 	TG   TelegramCong
 	DB   DBLite
 }

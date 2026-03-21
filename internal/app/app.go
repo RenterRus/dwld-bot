@@ -10,6 +10,7 @@ import (
 	"syscall"
 
 	"github.com/RenterRus/dwld-bot/internal/controller/grpc"
+	"github.com/RenterRus/dwld-bot/internal/controller/rest"
 	"github.com/RenterRus/dwld-bot/internal/controller/telegram"
 	rbot "github.com/RenterRus/dwld-bot/internal/repo/bot"
 	"github.com/RenterRus/dwld-bot/internal/repo/persistent"
@@ -36,23 +37,41 @@ func NewApp(configPath string) error {
 	dbconn := sqldb.NewDB(conf.DB.PathToDB, conf.DB.NameDB)
 	db := persistent.NewSQLRepo(dbconn)
 
-	botsrv := botserver.NewBot(telegram.BotConfig{
-		Token:         conf.TG.Token,
-		AllowedChatID: conf.TG.AllowedIDs,
-		AdminChatID:   conf.TG.Admins,
-		PoolProxy:     conf.TG.ProxyPool,
-	}, db)
+	var botsrv *botserver.Bot
+	var upload loader.Loader
+	var downloadUsecases bot.Bot
 
-	upload := loader.NewLoader(db, rbot.NewBotRepo(botsrv.Bot(), db))
+	if conf.GRPC.Enable {
+		botsrv = botserver.NewBot(telegram.BotConfig{
+			Token:         conf.TG.Token,
+			AllowedChatID: conf.TG.AllowedIDs,
+			AdminChatID:   conf.TG.Admins,
+			PoolProxy:     conf.TG.ProxyPool,
+		}, db)
 
-	downloadUsecases := bot.NewBotUsecases(db, upload)
+		upload = loader.NewLoader(db, rbot.NewBotRepo(botsrv.Bot(), db))
 
-	go func() {
-		upload.Processor(context.Background())
-	}()
-	go func() {
-		botsrv.Start()
-	}()
+		downloadUsecases = bot.NewBotUsecases(db, upload)
+
+		go func() {
+			upload.Processor(context.Background())
+		}()
+		go func() {
+			botsrv.Start()
+		}()
+	}
+
+	if conf.HTTP.Enable {
+		server := rest.NewServer(&rest.ServerConf{
+			DB:   db,
+			Host: conf.HTTP.Host,
+			Port: conf.HTTP.Port,
+		})
+
+		go func() {
+			server.Process()
+		}()
+	}
 
 	// gRPC Server
 	grpcServer := grpcserver.New(grpcserver.Port(conf.GRPC.Host, strconv.Itoa(conf.GRPC.Port)))
