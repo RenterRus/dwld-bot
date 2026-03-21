@@ -81,13 +81,17 @@ func (s *Server) list(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Internal error"))
 	}
 
-	fmt.Printf("servers: %s\n", s.servers)
-
 	respRaw := Links{
 		Link: make([]string, 0, len(links.Link)),
 	}
 
 	if len(s.servers) > 0 && len(links.Link) > 0 {
+		fmt.Println("servers:")
+		for _, srv := range s.servers {
+			fmt.Println(srv.Name())
+		}
+		fmt.Println("---------")
+
 		for _, server := range s.servers {
 			for _, l := range links.Link {
 				if _, err = url.ParseRequestURI(l); err != nil {
