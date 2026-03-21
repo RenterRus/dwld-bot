@@ -55,6 +55,8 @@ type Links struct {
 func (s *Server) list(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
+		fmt.Printf("[ERROR] ReadAll: %s\n", err.Error())
+
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Bad request"))
 	}
@@ -65,14 +67,21 @@ func (s *Server) list(w http.ResponseWriter, r *http.Request) {
 
 	err = json.Unmarshal(body, &links)
 	if err != nil {
+		fmt.Printf("[ERROR] Unmarshal: %s\n", err.Error())
+
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Internal error"))
 	}
+
 	s.servers, err = s.getServers()
 	if err != nil {
+		fmt.Printf("[ERROR] getServers: %s\n", err.Error())
+
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Internal error"))
 	}
+
+	fmt.Printf("servers: %s\n", s.servers)
 
 	respRaw := Links{
 		Link: make([]string, 0, len(links.Link)),
@@ -86,6 +95,9 @@ func (s *Server) list(w http.ResponseWriter, r *http.Request) {
 				}
 
 				server.SetToQueue(context.Background(), l, "sandbox", 10000)
+
+				fmt.Printf("send to download: %s\n", l)
+
 				respRaw.Link = append(respRaw.Link, l)
 			}
 		}
@@ -93,6 +105,8 @@ func (s *Server) list(w http.ResponseWriter, r *http.Request) {
 
 	resp, err := json.Marshal(respRaw)
 	if err != nil {
+		fmt.Printf("[ERROR] Marshal: %s\n", err.Error())
+
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Queue sended but marshal response failed"))
 	}
