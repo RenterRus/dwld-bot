@@ -74,6 +74,10 @@ func (s *Server) list(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Internal error"))
 	}
 
+	respRaw := Links{
+		Link: make([]string, 0, len(links.Link)),
+	}
+
 	if len(s.servers) > 0 && len(links.Link) > 0 {
 		for _, server := range s.servers {
 			for _, l := range links.Link {
@@ -82,12 +86,19 @@ func (s *Server) list(w http.ResponseWriter, r *http.Request) {
 				}
 
 				server.SetToQueue(context.Background(), l, "sandbox", 10000)
+				respRaw.Link = append(respRaw.Link, l)
 			}
 		}
 	}
 
+	resp, err := json.Marshal(respRaw)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Queue sended but marshal response failed"))
+	}
+
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("added"))
+	w.Write(resp)
 }
 
 func (s *Server) Process() {
