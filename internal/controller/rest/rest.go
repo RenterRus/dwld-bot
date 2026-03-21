@@ -54,7 +54,7 @@ type Item struct {
 }
 
 type Links struct {
-	Link []Item
+	Link []Item `json:"links"`
 }
 
 func (s *Server) list(w http.ResponseWriter, r *http.Request) {
