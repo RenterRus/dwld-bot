@@ -49,7 +49,7 @@ func (s *Server) getServers() ([]dwld.DWLDModel, error) {
 }
 
 type Item struct {
-	Link   string `json:"links"`
+	Link   string `json:"link"`
 	Folder string `json:"folder"`
 }
 
