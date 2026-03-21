@@ -48,8 +48,13 @@ func (s *Server) getServers() ([]dwld.DWLDModel, error) {
 	return resp, nil
 }
 
+type Item struct {
+	Link   string `json:"links"`
+	Folder string `json:"folder"`
+}
+
 type Links struct {
-	Link []string `json:"links"`
+	Link []Item
 }
 
 func (s *Server) list(w http.ResponseWriter, r *http.Request) {
@@ -81,9 +86,7 @@ func (s *Server) list(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Internal error"))
 	}
 
-	respRaw := Links{
-		Link: make([]string, 0, len(links.Link)),
-	}
+	raw := map[string]struct{}{}
 
 	if len(s.servers) > 0 && len(links.Link) > 0 {
 		fmt.Println("servers:")
@@ -94,17 +97,29 @@ func (s *Server) list(w http.ResponseWriter, r *http.Request) {
 
 		for _, server := range s.servers {
 			for _, l := range links.Link {
-				if _, err = url.ParseRequestURI(l); err != nil {
+				if _, err = url.ParseRequestURI(l.Link); err != nil {
 					continue
 				}
 
-				server.SetToQueue(context.Background(), l, "sandbox", 10000)
+				preresp, err := server.SetToQueue(context.Background(), l.Link, l.Folder, 10000)
+				if err != nil {
+					fmt.Println(l, ":", err.Error())
+					continue
+				}
 
-				fmt.Printf("send to download: %s\n", l)
+				fmt.Printf("send to download: %s/%s\n", l.Folder, l.Link)
 
-				respRaw.Link = append(respRaw.Link, l)
+				for _, v := range preresp {
+					raw[v.Link] = struct{}{}
+				}
 			}
 		}
+	}
+
+	respRaw := make([]string, 0, len(links.Link))
+	for k, v := range raw {
+		_ = v
+		respRaw = append(respRaw, k)
 	}
 
 	resp, err := json.Marshal(respRaw)
