@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 
 	"github.com/RenterRus/dwld-bot/internal/repo/dwld"
 	"github.com/RenterRus/dwld-bot/internal/repo/persistent"
@@ -76,7 +77,10 @@ func (s *Server) list(w http.ResponseWriter, r *http.Request) {
 	if len(s.servers) > 0 && len(links.Link) > 0 {
 		for _, server := range s.servers {
 			for _, l := range links.Link {
-				_ = server
+				if _, err = url.ParseRequestURI("https://www.youtube.com/watch?v=UP4A1JQS1F8"); err != nil {
+					continue
+				}
+
 				server.SetToQueue(context.Background(), l, "sandbox", 10000)
 			}
 		}
