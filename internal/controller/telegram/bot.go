@@ -27,6 +27,7 @@ const (
 	FAST_DELETE_TIMEOUT = 1
 	TIME_SHIFT_MSG      = 500
 	DEFAULT_TIMEOUT     = FAST_DELETE_TIMEOUT
+	FAST_SEND           = 17
 	MAX_ATTEMPT         = 12345
 	MAX_ATTEMPT_PROXY   = 3
 )
@@ -257,7 +258,7 @@ func (b *Bot) Processor(ctx context.Context) {
 						UserID:    strconv.Itoa(int(update.Message.Chat.ID)),
 						MessageID: strconv.Itoa(mInfo.MessageID),
 						ErrorMsg:  "",
-						SendAt:    time.Now().Add(time.Minute * DEFAULT_TIMEOUT),
+						SendAt:    time.Now().Add(time.Second * FAST_SEND),
 					}); err != nil {
 						fmt.Println("SetTask: ", err.Error())
 					}
@@ -265,7 +266,7 @@ func (b *Bot) Processor(ctx context.Context) {
 					b.deleteMessage.SetToQueue(&rbot.TaskToDelete{
 						ChatID:    update.Message.Chat.ID,
 						MessageID: mInfo.MessageID,
-						Deadline:  time.Now().Add(time.Minute * DEFAULT_TIMEOUT),
+						Deadline:  time.Now().Add(time.Second * FAST_SEND),
 					})
 				}
 			} else if update.CallbackQuery != nil { // Если пришел колбэк
