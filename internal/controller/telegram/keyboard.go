@@ -92,8 +92,8 @@ const (
 
 var qualities map[Folder]string = map[Folder]string{
 	income:      "inbox",
-	background:  "На фон-к",
-	trash:       "Ну такоэ",
+	background:  "Нафонк",
+	trash:       "Нутакоэ",
 	learn:       "Облучение",
 	music:       "Клипсы",
 	interesting: "Интересное",
