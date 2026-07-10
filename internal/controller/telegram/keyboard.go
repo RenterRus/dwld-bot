@@ -92,12 +92,12 @@ const (
 
 var qualities map[Folder]string = map[Folder]string{
 	income:      "inbox",
-	background:  "Нафонк",
-	trash:       "Нутакоэ",
-	learn:       "Облучение",
-	music:       "Клипсы",
-	interesting: "Интересное",
-	within:      "Совместно",
+	background:  "background",
+	trash:       "trash",
+	learn:       "learn",
+	music:       "music",
+	interesting: "interesting",
+	within:      "within",
 }
 
 func (b *Bot) initKeyboardLink(link string) map[string]buttons {
