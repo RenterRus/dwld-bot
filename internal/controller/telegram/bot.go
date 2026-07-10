@@ -220,7 +220,7 @@ func (b *Bot) Processor(ctx context.Context) {
 					} else if err := b.botCase.SetTask(entity.TaskModel{
 						Link:      update.Message.Text,
 						Quality:   QUALITY,
-						UserName:  fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[income]),
+						UserName:  fmt.Sprintf(FOLDER_FORMAT, update.Message.From.UserName, qualities[income]),
 						UserID:    strconv.Itoa(int(update.Message.Chat.ID)),
 						MessageID: strconv.Itoa(update.Message.MessageID),
 						ErrorMsg:  "",
@@ -257,7 +257,7 @@ func (b *Bot) Processor(ctx context.Context) {
 					if err := b.botCase.SetTask(entity.TaskModel{
 						Link:      update.Message.Text,
 						Quality:   QUALITY,
-						UserName:  fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[income]),
+						UserName:  fmt.Sprintf(FOLDER_FORMAT, update.Message.From.UserName, qualities[income]),
 						UserID:    strconv.Itoa(int(update.Message.Chat.ID)),
 						MessageID: strconv.Itoa(mInfo.MessageID),
 						ErrorMsg:  "",
