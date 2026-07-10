@@ -78,40 +78,55 @@ func (k *Bot) keyboardAdmins() tgbotapi.InlineKeyboardMarkup {
 	)
 }
 
-type Quality int
+type Folder int
 
 const (
-	FHD Quality = iota + 1
-	_2K
-	_4K
+	income Folder = iota
+	background
+	trash
+	learn
+	music
+	interesting
+	within
 )
 
-var qualities map[Quality]string = map[Quality]string{
-	FHD: "1080",
-	_2K: "1440",
-	_4K: "2160",
-}
-
-var qualitiesInt map[Quality]int = map[Quality]int{
-	FHD: 1080,
-	_2K: 1440,
-	_4K: 2160,
+var qualities map[Folder]string = map[Folder]string{
+	income:      "inbox",
+	background:  "На фон-к",
+	trash:       "Ну такоэ",
+	learn:       "Облучение",
+	music:       "Клипсы",
+	interesting: "Интересное",
+	within:      "Совместно",
 }
 
 func (b *Bot) initKeyboardLink(link string) map[string]buttons {
 	buttonsMap := make(map[string]buttons)
 
-	buttonsMap[qualities[FHD]] = buttons{
-		ID:   fmt.Sprintf("%s|%s", qualities[FHD], link),
-		Text: qualities[FHD],
+	buttonsMap[qualities[background]] = buttons{
+		ID:   fmt.Sprintf("%s|%s", qualities[background], link),
+		Text: qualities[background],
 	}
-	buttonsMap[qualities[_2K]] = buttons{
-		ID:   fmt.Sprintf("%s|%s", qualities[_2K], link),
-		Text: qualities[_2K],
+	buttonsMap[qualities[trash]] = buttons{
+		ID:   fmt.Sprintf("%s|%s", qualities[trash], link),
+		Text: qualities[trash],
 	}
-	buttonsMap[qualities[_4K]] = buttons{
-		ID:   fmt.Sprintf("%s|%s", qualities[_4K], link),
-		Text: qualities[_4K],
+	buttonsMap[qualities[learn]] = buttons{
+		ID:   fmt.Sprintf("%s|%s", qualities[learn], link),
+		Text: qualities[learn],
+	}
+
+	buttonsMap[qualities[music]] = buttons{
+		ID:   fmt.Sprintf("%s|%s", qualities[music], link),
+		Text: qualities[music],
+	}
+	buttonsMap[qualities[interesting]] = buttons{
+		ID:   fmt.Sprintf("%s|%s", qualities[interesting], link),
+		Text: qualities[interesting],
+	}
+	buttonsMap[qualities[within]] = buttons{
+		ID:   fmt.Sprintf("%s|%s", qualities[within], link),
+		Text: qualities[within],
 	}
 
 	return buttonsMap
@@ -121,9 +136,14 @@ func (k *Bot) qualityKeyboard(link string) tgbotapi.InlineKeyboardMarkup {
 	buttonsMap := k.initKeyboardLink(link)
 	return tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[FHD]].Text, buttonsMap[qualities[FHD]].ID),
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[_2K]].Text, buttonsMap[qualities[_2K]].ID),
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[_4K]].Text, buttonsMap[qualities[_4K]].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[background]].Text, buttonsMap[qualities[background]].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[trash]].Text, buttonsMap[qualities[trash]].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[learn]].Text, buttonsMap[qualities[learn]].ID),
+		),
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[music]].Text, buttonsMap[qualities[music]].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[interesting]].Text, buttonsMap[qualities[interesting]].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[within]].Text, buttonsMap[qualities[within]].ID),
 		),
 	)
 }

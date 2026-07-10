@@ -23,13 +23,15 @@ import (
 )
 
 const (
-	DEFAULT_QUALITY     = 4320 // 8K
+	QUALITY             = 10000
 	FAST_DELETE_TIMEOUT = 1
 	TIME_SHIFT_MSG      = 500
 	DEFAULT_TIMEOUT     = FAST_DELETE_TIMEOUT
 	FAST_SEND           = 17
 	MAX_ATTEMPT         = 12345
 	MAX_ATTEMPT_PROXY   = 3
+
+	FOLDER_FORMAT = "[%s] %s"
 )
 
 type BotConfig struct {
@@ -116,7 +118,7 @@ func NewBot(conf BotConfig, db persistent.SQLRepo) BotModel {
 
 	return &Bot{
 		bot:            bot,
-		defaultQuality: DEFAULT_QUALITY,
+		defaultQuality: QUALITY,
 		adminChatID:    conf.AdminChatID,
 		allowedChatID:  conf.AllowedChatID,
 		botCase:        botusecase.NewBotUsecases(db, loader.NewLoader(db, rbot.NewBotRepo(bot, db))),
@@ -217,8 +219,8 @@ func (b *Bot) Processor(ctx context.Context) {
 						// Это ссылка, но вставка не удалась
 					} else if err := b.botCase.SetTask(entity.TaskModel{
 						Link:      update.Message.Text,
-						Quality:   DEFAULT_QUALITY,
-						UserName:  update.Message.From.UserName,
+						Quality:   QUALITY,
+						UserName:  fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[income]),
 						UserID:    strconv.Itoa(int(update.Message.Chat.ID)),
 						MessageID: strconv.Itoa(update.Message.MessageID),
 						ErrorMsg:  "",
@@ -228,7 +230,8 @@ func (b *Bot) Processor(ctx context.Context) {
 					} else {
 						isLinkInsert = true
 						//Ссылка встала в очередь
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] встала в очередь. Целевое качество %d. Для смены, нажмите на варианты ниже", update.Message.Text, DEFAULT_QUALITY))
+						msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] встала в очередь. Ниже можно выбрать куда загрузить видео. По-умолчанию, загрузится в %s",
+							update.Message.Text, fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[income])))
 						//Прикрепляем клавитуру выбора качества для конкретной ссылки
 						msg.ReplyMarkup = b.qualityKeyboard(update.Message.Text)
 
@@ -253,8 +256,8 @@ func (b *Bot) Processor(ctx context.Context) {
 				if isLinkInsert {
 					if err := b.botCase.SetTask(entity.TaskModel{
 						Link:      update.Message.Text,
-						Quality:   DEFAULT_QUALITY,
-						UserName:  update.Message.From.UserName,
+						Quality:   QUALITY,
+						UserName:  fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[income]),
 						UserID:    strconv.Itoa(int(update.Message.Chat.ID)),
 						MessageID: strconv.Itoa(mInfo.MessageID),
 						ErrorMsg:  "",
@@ -378,24 +381,32 @@ func (b *Bot) Processor(ctx context.Context) {
 							UserID:    strconv.Itoa(int(update.CallbackQuery.Message.Chat.ID)),
 							MessageID: strconv.Itoa(update.CallbackQuery.Message.MessageID),
 							ErrorMsg:  "",
-							UserName:  update.CallbackQuery.From.UserName,
-							Quality:   DEFAULT_QUALITY,
+							UserName:  fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[income]),
+							Quality:   QUALITY,
 							SendAt:    time.Now().Add(time.Minute * 5),
 						}
 
 						switch data[0] {
-						case qualities[FHD]:
-							task.Quality = qualitiesInt[FHD]
-						case qualities[_2K]:
-							task.Quality = qualitiesInt[_2K]
-						case qualities[_4K]:
-							task.Quality = qualitiesInt[_4K]
+						case qualities[background]:
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[background])
+						case qualities[trash]:
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[trash])
+						case qualities[learn]:
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[learn])
+						case qualities[music]:
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[music])
+						case qualities[interesting]:
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[interesting])
+						case qualities[within]:
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[within])
+						default:
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[income])
 						}
 
 						if err := b.botCase.SetTask(task); err != nil {
 							msg.Text = fmt.Sprintf("Не получилось вставить обновление, причина: %s", err.Error())
 						}
-						msg.Text = fmt.Sprintf("Для видео [%s] задано целевое качество [%d]", task.Link, task.Quality)
+						msg.Text = fmt.Sprintf("Для видео [%s] задан путь загрзузки [%s]", task.Link, task.UserName)
 					} else {
 						msg.Text = "Неожиданная команда"
 					}
