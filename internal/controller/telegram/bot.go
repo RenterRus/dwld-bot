@@ -231,7 +231,7 @@ func (b *Bot) Processor(ctx context.Context) {
 						isLinkInsert = true
 						//Ссылка встала в очередь
 						msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] встала в очередь. Ниже можно выбрать куда загрузить видео. По-умолчанию, загрузится в %s",
-							update.Message.Text, fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[income])))
+							update.Message.Text, fmt.Sprintf(FOLDER_FORMAT, update.Message.From.UserName, qualities[income])))
 						//Прикрепляем клавитуру выбора качества для конкретной ссылки
 						msg.ReplyMarkup = b.qualityKeyboard(update.Message.Text)
 
