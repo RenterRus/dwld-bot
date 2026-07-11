@@ -122,7 +122,7 @@ func (l *LoaderCase) Processor(ctx context.Context) {
 						}
 					}
 
-					fmt.Printf("Ссылка [%s] отправлена в скачивальщик %s с целевым качеством %d\n", v.Link, conf.Name, v.Quality)
+					fmt.Printf("Ссылка [%s] будет загружена скачивальщиком %s в папку %s\n", v.Link, conf.Name, v.UserName)
 					l.bot.SendMessage(v.UserID, fmt.Sprintf("Ссылка [%s] отправлена в скачивальщик %s с целевым качеством %d", v.Link, conf.Name, v.Quality))
 					break
 				}

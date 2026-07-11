@@ -220,7 +220,7 @@ func (b *Bot) Processor(ctx context.Context) {
 					} else if err := b.botCase.SetTask(entity.TaskModel{
 						Link:      update.Message.Text,
 						Quality:   QUALITY,
-						UserName:  fmt.Sprintf(FOLDER_FORMAT, update.Message.From.UserName, qualities[income]),
+						UserName:  fmt.Sprintf(FOLDER_FORMAT, update.Message.From.UserName, qualities[income].RuName),
 						UserID:    strconv.Itoa(int(update.Message.Chat.ID)),
 						MessageID: strconv.Itoa(update.Message.MessageID),
 						ErrorMsg:  "",
@@ -231,7 +231,7 @@ func (b *Bot) Processor(ctx context.Context) {
 						isLinkInsert = true
 						//Ссылка встала в очередь
 						msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] встала в очередь. Ниже можно выбрать куда загрузить видео. По-умолчанию, загрузится в %s",
-							update.Message.Text, fmt.Sprintf(FOLDER_FORMAT, update.Message.From.UserName, qualities[income])))
+							update.Message.Text, fmt.Sprintf(FOLDER_FORMAT, update.Message.From.UserName, qualities[income].RuName)))
 						//Прикрепляем клавитуру выбора качества для конкретной ссылки
 						msg.ReplyMarkup = b.qualityKeyboard(update.Message.Text)
 
@@ -257,7 +257,7 @@ func (b *Bot) Processor(ctx context.Context) {
 					if err := b.botCase.SetTask(entity.TaskModel{
 						Link:      update.Message.Text,
 						Quality:   QUALITY,
-						UserName:  fmt.Sprintf(FOLDER_FORMAT, update.Message.From.UserName, qualities[income]),
+						UserName:  fmt.Sprintf(FOLDER_FORMAT, update.Message.From.UserName, qualities[income].RuName),
 						UserID:    strconv.Itoa(int(update.Message.Chat.ID)),
 						MessageID: strconv.Itoa(mInfo.MessageID),
 						ErrorMsg:  "",
@@ -381,32 +381,34 @@ func (b *Bot) Processor(ctx context.Context) {
 							UserID:    strconv.Itoa(int(update.CallbackQuery.Message.Chat.ID)),
 							MessageID: strconv.Itoa(update.CallbackQuery.Message.MessageID),
 							ErrorMsg:  "",
-							UserName:  fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[income]),
+							UserName:  fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[income].RuName),
 							Quality:   QUALITY,
-							SendAt:    time.Now().Add(time.Minute * 5),
+							SendAt:    time.Now().Add(time.Minute),
 						}
 
 						switch data[0] {
-						case qualities[background]:
-							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[background])
-						case qualities[trash]:
-							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[trash])
-						case qualities[learn]:
-							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[learn])
-						case qualities[music]:
-							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[music])
-						case qualities[interesting]:
-							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[interesting])
-						case qualities[within]:
-							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[within])
+						case qualities[background].EngName:
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[background].RuName)
+						case qualities[trash].EngName:
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[trash].RuName)
+						case qualities[learn].EngName:
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[learn].RuName)
+						case qualities[music].EngName:
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[music].RuName)
+						case qualities[interesting].EngName:
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[interesting].RuName)
+						case qualities[within].EngName:
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[within].RuName)
+						case qualities[indrive].EngName:
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[within].RuName)
 						default:
-							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[income])
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[income].RuName)
 						}
 
 						if err := b.botCase.SetTask(task); err != nil {
 							msg.Text = fmt.Sprintf("Не получилось вставить обновление, причина: %s", err.Error())
 						}
-						msg.Text = fmt.Sprintf("Для видео [%s] задан путь загрзузки [%s]", task.Link, task.UserName)
+						msg.Text = fmt.Sprintf("Для видео [ %s ] задан путь загрзузки: %s", task.Link, task.UserName)
 					} else {
 						msg.Text = "Неожиданная команда"
 					}
