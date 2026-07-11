@@ -135,33 +135,33 @@ func (b *Bot) initKeyboardLink(link string) map[string]buttons {
 	buttonsMap := make(map[string]buttons)
 
 	buttonsMap[qualities[background].EngName] = buttons{
-		ID:   fmt.Sprintf("%s|%s", qualities[background], link),
+		ID:   fmt.Sprintf("%s|%s", qualities[background].EngName, link),
 		Text: qualities[background].RuName,
 	}
 	buttonsMap[qualities[trash].EngName] = buttons{
-		ID:   fmt.Sprintf("%s|%s", qualities[trash], link),
+		ID:   fmt.Sprintf("%s|%s", qualities[trash].EngName, link),
 		Text: qualities[trash].RuName,
 	}
 	buttonsMap[qualities[learn].EngName] = buttons{
-		ID:   fmt.Sprintf("%s|%s", qualities[learn], link),
+		ID:   fmt.Sprintf("%s|%s", qualities[learn].EngName, link),
 		Text: qualities[learn].RuName,
 	}
 
 	buttonsMap[qualities[music].EngName] = buttons{
-		ID:   fmt.Sprintf("%s|%s", qualities[music], link),
+		ID:   fmt.Sprintf("%s|%s", qualities[music].EngName, link),
 		Text: qualities[music].RuName,
 	}
 	buttonsMap[qualities[interesting].EngName] = buttons{
-		ID:   fmt.Sprintf("%s|%s", qualities[interesting], link),
+		ID:   fmt.Sprintf("%s|%s", qualities[interesting].EngName, link),
 		Text: qualities[interesting].RuName,
 	}
 	buttonsMap[qualities[within].EngName] = buttons{
-		ID:   fmt.Sprintf("%s|%s", qualities[within], link),
+		ID:   fmt.Sprintf("%s|%s", qualities[within].EngName, link),
 		Text: qualities[within].RuName,
 	}
 
 	buttonsMap[qualities[indrive].EngName] = buttons{
-		ID:   fmt.Sprintf("%s|%s", qualities[within], link),
+		ID:   fmt.Sprintf("%s|%s", qualities[within].EngName, link),
 		Text: qualities[indrive].RuName,
 	}
 
