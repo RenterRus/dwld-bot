@@ -99,15 +99,15 @@ type Button struct {
 var qualities map[Folder]Button = map[Folder]Button{
 	income: Button{
 		EngName: "inbox",
-		RuName:  "Без категории",
+		RuName:  "Без_категории",
 	},
 	background: Button{
 		EngName: "background",
-		RuName:  "Ha фон-к",
+		RuName:  "Ha_фон-к",
 	},
 	trash: Button{
 		EngName: "trash",
-		RuName:  "Hy такоэ",
+		RuName:  "Hy_такоэ",
 	},
 	learn: Button{
 		EngName: "learn",
@@ -123,7 +123,7 @@ var qualities map[Folder]Button = map[Folder]Button{
 	},
 	indrive: Button{
 		EngName: "indrive",
-		RuName:  "B дорогу",
+		RuName:  "B_дорогу",
 	},
 	within: Button{
 		EngName: "within",
