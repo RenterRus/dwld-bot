@@ -400,7 +400,7 @@ func (b *Bot) Processor(ctx context.Context) {
 						case qualities[within].EngName:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[within].RuName)
 						case qualities[indrive].EngName:
-							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[within].RuName)
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[indrive].RuName)
 						default:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[income].RuName)
 						}
