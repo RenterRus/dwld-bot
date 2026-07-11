@@ -99,15 +99,15 @@ type Button struct {
 var qualities map[Folder]Button = map[Folder]Button{
 	income: Button{
 		EngName: "inbox",
-		RuName:  "Без_категории",
+		RuName:  "Без категории",
 	},
 	background: Button{
 		EngName: "background",
-		RuName:  "Ha_фон-к",
+		RuName:  "Ha фон-к",
 	},
 	trash: Button{
 		EngName: "trash",
-		RuName:  "Hy_такоэ",
+		RuName:  "Hy такоэ",
 	},
 	learn: Button{
 		EngName: "learn",
@@ -123,7 +123,7 @@ var qualities map[Folder]Button = map[Folder]Button{
 	},
 	indrive: Button{
 		EngName: "indrive",
-		RuName:  "B_дорогу",
+		RuName:  "B дорогу",
 	},
 	within: Button{
 		EngName: "within",
@@ -161,7 +161,7 @@ func (b *Bot) initKeyboardLink(link string) map[string]buttons {
 	}
 
 	buttonsMap[qualities[indrive].EngName] = buttons{
-		ID:   fmt.Sprintf("%s|%s", qualities[within].EngName, link),
+		ID:   fmt.Sprintf("%s|%s", qualities[indrive].EngName, link),
 		Text: qualities[indrive].RuName,
 	}
 
