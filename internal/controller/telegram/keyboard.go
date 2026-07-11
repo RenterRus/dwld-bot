@@ -103,11 +103,11 @@ var qualities map[Folder]Button = map[Folder]Button{
 	},
 	background: Button{
 		EngName: "background",
-		RuName:  "На фон-к",
+		RuName:  "Ha фон-к",
 	},
 	trash: Button{
 		EngName: "trash",
-		RuName:  "Ну такоэ",
+		RuName:  "Hy такоэ",
 	},
 	learn: Button{
 		EngName: "learn",
@@ -123,7 +123,7 @@ var qualities map[Folder]Button = map[Folder]Button{
 	},
 	indrive: Button{
 		EngName: "indrive",
-		RuName:  "В дорогу",
+		RuName:  "B дорогу",
 	},
 	within: Button{
 		EngName: "within",
@@ -172,20 +172,20 @@ func (k *Bot) qualityKeyboard(link string) tgbotapi.InlineKeyboardMarkup {
 	buttonsMap := k.initKeyboardLink(link)
 	return tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[income].RuName].Text, buttonsMap[qualities[income].EngName].ID),
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[indrive].RuName].Text, buttonsMap[qualities[indrive].EngName].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[income].EngName].Text, buttonsMap[qualities[income].EngName].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[trash].EngName].Text, buttonsMap[qualities[trash].EngName].ID),
 		),
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[background].RuName].Text, buttonsMap[qualities[background].EngName].ID),
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[trash].RuName].Text, buttonsMap[qualities[trash].EngName].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[learn].EngName].Text, buttonsMap[qualities[learn].EngName].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[music].EngName].Text, buttonsMap[qualities[music].EngName].ID),
 		),
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[learn].RuName].Text, buttonsMap[qualities[learn].EngName].ID),
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[music].RuName].Text, buttonsMap[qualities[music].EngName].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[indrive].EngName].Text, buttonsMap[qualities[indrive].EngName].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[background].EngName].Text, buttonsMap[qualities[background].EngName].ID),
 		),
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[interesting].RuName].Text, buttonsMap[qualities[interesting].EngName].ID),
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[within].RuName].Text, buttonsMap[qualities[within].EngName].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[interesting].EngName].Text, buttonsMap[qualities[interesting].EngName].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[within].EngName].Text, buttonsMap[qualities[within].EngName].ID),
 		),
 	)
 }

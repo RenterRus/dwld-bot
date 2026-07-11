@@ -336,7 +336,7 @@ func (b *Bot) Processor(ctx context.Context) {
 								if n > 0 {
 									queues.WriteString("\n")
 								}
-								queues.WriteString(fmt.Sprintf("<b>G%d|L%d</b>: [%s][%d][%.2f][%.2f/%.2f][ %s ][%s] TO: [%s] %s\n", (i + 1), (n + 1), task.Status, int(task.TargetQuantity),
+								queues.WriteString(fmt.Sprintf("<b>G%d|L%d</b>: [%s][%.2f][%.2f/%.2f][ %s ][%s] TO: [%s] %s\n", (i + 1), (n + 1), task.Status,
 									task.Procentage, task.CurrentSize, task.TotalSize, task.Link, task.Filename, task.MoveTo, task.Message))
 							}
 
