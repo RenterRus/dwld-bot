@@ -140,7 +140,7 @@ func (b *Bot) initKeyboardLink(link string) map[string]buttons {
 	}
 
 	buttonsMap[qualities[income].EngName] = buttons{
-		ID:   fmt.Sprintf("%s|%s", qualities[background].EngName, link),
+		ID:   fmt.Sprintf("%s|%s", qualities[income].EngName, link),
 		Text: qualities[income].RuName,
 	}
 	buttonsMap[qualities[trash].EngName] = buttons{
