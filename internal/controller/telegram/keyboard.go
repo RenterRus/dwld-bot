@@ -119,7 +119,7 @@ var qualities map[Folder]Button = map[Folder]Button{
 	},
 	interesting: Button{
 		EngName: "6",
-		RuName:  "ЛюбоПытное",
+		RuName:  "Интересно",
 	},
 	indrive: Button{
 		EngName: "7",
