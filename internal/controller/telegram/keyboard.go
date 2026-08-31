@@ -89,6 +89,10 @@ const (
 	interesting
 	indrive
 	within
+	kekos
+	forwork
+	podcasts
+	hobby
 )
 
 type Button struct {
@@ -128,6 +132,22 @@ var qualities map[Folder]Button = map[Folder]Button{
 	within: Button{
 		EngName: "8",
 		RuName:  "Совместно",
+	},
+	kekos: Button{
+		EngName: "9",
+		RuName:  "Покекать",
+	},
+	forwork: Button{
+		EngName: "10",
+		RuName:  "Для работы",
+	},
+	podcasts: Button{
+		EngName: "11",
+		RuName:  "Подкасты",
+	},
+	hobby: Button{
+		EngName: "12",
+		RuName:  "Хоббиби",
 	},
 }
 
@@ -170,6 +190,26 @@ func (b *Bot) initKeyboardLink(link string) map[string]buttons {
 		Text: qualities[indrive].RuName,
 	}
 
+	buttonsMap[qualities[kekos].EngName] = buttons{
+		ID:   fmt.Sprintf("%s|%s", qualities[kekos].EngName, link),
+		Text: qualities[kekos].RuName,
+	}
+
+	buttonsMap[qualities[forwork].EngName] = buttons{
+		ID:   fmt.Sprintf("%s|%s", qualities[forwork].EngName, link),
+		Text: qualities[forwork].RuName,
+	}
+
+	buttonsMap[qualities[podcasts].EngName] = buttons{
+		ID:   fmt.Sprintf("%s|%s", qualities[podcasts].EngName, link),
+		Text: qualities[podcasts].RuName,
+	}
+
+	buttonsMap[qualities[hobby].EngName] = buttons{
+		ID:   fmt.Sprintf("%s|%s", qualities[hobby].EngName, link),
+		Text: qualities[hobby].RuName,
+	}
+
 	return buttonsMap
 }
 
@@ -177,18 +217,22 @@ func (k *Bot) qualityKeyboard(link string) tgbotapi.InlineKeyboardMarkup {
 	buttonsMap := k.initKeyboardLink(link)
 	return tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[hobby].EngName].Text, buttonsMap[qualities[hobby].EngName].ID),
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[income].EngName].Text, buttonsMap[qualities[income].EngName].ID),
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[trash].EngName].Text, buttonsMap[qualities[trash].EngName].ID),
 		),
 		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[forwork].EngName].Text, buttonsMap[qualities[forwork].EngName].ID),
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[learn].EngName].Text, buttonsMap[qualities[learn].EngName].ID),
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[music].EngName].Text, buttonsMap[qualities[music].EngName].ID),
 		),
 		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[podcasts].EngName].Text, buttonsMap[qualities[podcasts].EngName].ID),
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[indrive].EngName].Text, buttonsMap[qualities[indrive].EngName].ID),
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[background].EngName].Text, buttonsMap[qualities[background].EngName].ID),
 		),
 		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[kekos].EngName].Text, buttonsMap[qualities[kekos].EngName].ID),
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[interesting].EngName].Text, buttonsMap[qualities[interesting].EngName].ID),
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[within].EngName].Text, buttonsMap[qualities[within].EngName].ID),
 		),
