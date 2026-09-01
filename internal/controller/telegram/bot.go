@@ -387,6 +387,8 @@ func (b *Bot) Processor(ctx context.Context) {
 						}
 
 						switch data[0] {
+						case qualities[inmusic].EngName:
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[inmusic].RuName)
 						case qualities[background].EngName:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[background].RuName)
 						case qualities[trash].EngName:

@@ -93,6 +93,7 @@ const (
 	forwork
 	podcasts
 	hobby
+	inmusic
 )
 
 type Button struct {
@@ -148,6 +149,10 @@ var qualities map[Folder]Button = map[Folder]Button{
 	hobby: Button{
 		EngName: "12",
 		RuName:  "Хоббиби",
+	},
+	inmusic: Button{
+		EngName: "13",
+		RuName:  "B музыку",
 	},
 }
 
@@ -210,6 +215,11 @@ func (b *Bot) initKeyboardLink(link string) map[string]buttons {
 		Text: qualities[hobby].RuName,
 	}
 
+	buttonsMap[qualities[inmusic].EngName] = buttons{
+		ID:   fmt.Sprintf("%s|%s", qualities[inmusic].EngName, link),
+		Text: qualities[inmusic].RuName,
+	}
+
 	return buttonsMap
 }
 
@@ -218,7 +228,7 @@ func (k *Bot) qualityKeyboard(link string) tgbotapi.InlineKeyboardMarkup {
 	return tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[hobby].EngName].Text, buttonsMap[qualities[hobby].EngName].ID),
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[income].EngName].Text, buttonsMap[qualities[income].EngName].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[inmusic].EngName].Text, buttonsMap[qualities[inmusic].EngName].ID),
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[trash].EngName].Text, buttonsMap[qualities[trash].EngName].ID),
 		),
 		tgbotapi.NewInlineKeyboardRow(
