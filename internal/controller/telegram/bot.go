@@ -300,7 +300,7 @@ func (b *Bot) Processor(ctx context.Context) {
 						}
 						resp := strings.Builder{}
 						for _, v := range queue {
-							resp.WriteString(fmt.Sprintf("\"%s\",\n", v.Link))
+							resp.WriteString(fmt.Sprintf("%s\n", v.Link))
 						}
 						msg.Text = resp.String()
 					}
