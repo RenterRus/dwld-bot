@@ -405,12 +405,12 @@ func (b *Bot) Processor(ctx context.Context) {
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[indrive].RuName)
 						case qualities[forwork].EngName:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[forwork].RuName)
-						case qualities[kekos].EngName:
-							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[kekos].RuName)
-						case qualities[podcasts].EngName:
-							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[podcasts].RuName)
-						case qualities[hobby].EngName:
-							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[hobby].RuName)
+						case qualities[clipers].EngName:
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[clipers].RuName)
+						case qualities[takoe].EngName:
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[takoe].RuName)
+						case qualities[polezno].EngName:
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[polezno].RuName)
 						default:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[income].RuName)
 						}
