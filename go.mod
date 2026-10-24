@@ -1,6 +1,6 @@
 module github.com/RenterRus/dwld-bot
 
-go 1.24.4
+go 1.26.8
 
 require (
 	github.com/AlekSi/pointer v1.2.0
