@@ -387,30 +387,24 @@ func (b *Bot) Processor(ctx context.Context) {
 						}
 
 						switch data[0] {
-						case qualities[inmusic].EngName:
-							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[inmusic].RuName)
+						case qualities[base].EngName:
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[base].RuName)
 						case qualities[background].EngName:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[background].RuName)
-						case qualities[trash].EngName:
-							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[trash].RuName)
-						case qualities[learn].EngName:
-							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[learn].RuName)
+						case qualities[development].EngName:
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[development].RuName)
+						case qualities[pacifier].EngName:
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[pacifier].RuName)
 						case qualities[music].EngName:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[music].RuName)
-						case qualities[interesting].EngName:
-							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[interesting].RuName)
+						case qualities[curious].EngName:
+							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[curious].RuName)
 						case qualities[within].EngName:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[within].RuName)
 						case qualities[indrive].EngName:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[indrive].RuName)
-						case qualities[forwork].EngName:
-							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[forwork].RuName)
 						case qualities[clipers].EngName:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[clipers].RuName)
-						case qualities[takoe].EngName:
-							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[takoe].RuName)
-						case qualities[polezno].EngName:
-							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[polezno].RuName)
 						default:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[income].RuName)
 						}
