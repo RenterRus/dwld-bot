@@ -81,16 +81,16 @@ func (k *Bot) keyboardAdmins() tgbotapi.InlineKeyboardMarkup {
 type Folder int
 
 const (
-	income Folder = iota
-	base
-	indrive
-	development
-	music
-	background
-	within
-	pacifier
-	clipers
-	curious
+	def Folder = iota
+	one
+	two
+	three
+	four
+	five
+	six
+	seven
+	eith
+	nine
 )
 
 type Button struct {
@@ -98,46 +98,51 @@ type Button struct {
 	RuName  string
 }
 
+/*
+[Полезно | one]			[На работу | two]	   	[Топ | three]
+[В дорогу | four]		[Совместно | five]		[На фон-к | six]
+[Trash | seven]			[На тренировку | eith]	 [Интересно | nine]
+*/
 var qualities map[Folder]Button = map[Folder]Button{
-	income: Button{
+	def: Button{
 		EngName: "0",
 		RuName:  "Без категории",
 	},
-	background: Button{
+	one: Button{
 		EngName: "1",
-		RuName:  "Ha фон-к",
+		RuName:  "Полезно",
 	},
-	base: Button{
+	two: Button{
 		EngName: "2",
-		RuName:  "Это база",
+		RuName:  "На работу",
 	},
-	development: Button{
+	three: Button{
 		EngName: "3",
-		RuName:  "Развитие",
+		RuName:  "Топ",
 	},
-	clipers: Button{
+	four: Button{
 		EngName: "4",
-		RuName:  "Клипсы",
+		RuName:  "В дорогу",
 	},
-	pacifier: Button{
+	five: Button{
 		EngName: "5",
-		RuName:  "Пустышка",
-	},
-	indrive: Button{
-		EngName: "6",
-		RuName:  "B дорогу",
-	},
-	within: Button{
-		EngName: "7",
 		RuName:  "Совместно",
 	},
-	curious: Button{
-		EngName: "8",
-		RuName:  "Любопытно",
+	six: Button{
+		EngName: "6",
+		RuName:  "На фон-к",
 	},
-	music: Button{
+	seven: Button{
+		EngName: "7",
+		RuName:  "Trash",
+	},
+	eith: Button{
+		EngName: "8",
+		RuName:  "На тренировку",
+	},
+	nine: Button{
 		EngName: "9",
-		RuName:  "Музыка",
+		RuName:  "Интересно",
 	},
 }
 
@@ -154,29 +159,23 @@ func (b *Bot) initKeyboardLink(link string) map[string]buttons {
 	return buttonsMap
 }
 
-/*
-	[Это база | base]		[В дорогу | indrive]	   	[Развитие | development]
-	[Музыка | music]		[На фон-к | background]		[Совместно | within]
-	[Пустышка | pacifier]	[Клипсы | clipers]	   		[Любопытно | curious]
-*/
-
 func (k *Bot) qualityKeyboard(link string) tgbotapi.InlineKeyboardMarkup {
 	buttonsMap := k.initKeyboardLink(link)
 	return tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[base].EngName].Text, buttonsMap[qualities[base].EngName].ID),
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[indrive].EngName].Text, buttonsMap[qualities[indrive].EngName].ID),
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[development].EngName].Text, buttonsMap[qualities[development].EngName].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[one].EngName].Text, buttonsMap[qualities[one].EngName].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[two].EngName].Text, buttonsMap[qualities[two].EngName].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[three].EngName].Text, buttonsMap[qualities[three].EngName].ID),
 		),
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[music].EngName].Text, buttonsMap[qualities[music].EngName].ID),
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[background].EngName].Text, buttonsMap[qualities[background].EngName].ID),
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[within].EngName].Text, buttonsMap[qualities[within].EngName].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[four].EngName].Text, buttonsMap[qualities[four].EngName].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[five].EngName].Text, buttonsMap[qualities[five].EngName].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[six].EngName].Text, buttonsMap[qualities[six].EngName].ID),
 		),
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[pacifier].EngName].Text, buttonsMap[qualities[pacifier].EngName].ID),
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[clipers].EngName].Text, buttonsMap[qualities[clipers].EngName].ID),
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[curious].EngName].Text, buttonsMap[qualities[curious].EngName].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[seven].EngName].Text, buttonsMap[qualities[seven].EngName].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[eith].EngName].Text, buttonsMap[qualities[eith].EngName].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[nine].EngName].Text, buttonsMap[qualities[nine].EngName].ID),
 		),
 	)
 }
