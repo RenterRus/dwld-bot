@@ -110,7 +110,7 @@ var qualities map[Folder]Button = map[Folder]Button{
 	},
 	one: Button{
 		EngName: "1",
-		RuName:  "Полезно",
+		RuName:  "Облучение",
 	},
 	two: Button{
 		EngName: "2",
