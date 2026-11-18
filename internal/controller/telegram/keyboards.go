@@ -198,6 +198,8 @@ func (b *Bot) initListKeyboardLink(link string) map[string]buttons {
 		}
 	}
 
+	fmt.Println(buttonsMap)
+
 	return buttonsMap
 }
 
