@@ -19,6 +19,7 @@ import (
 	"github.com/RenterRus/dwld-bot/internal/usecase/loader"
 	"github.com/go-playground/validator/v10"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/samber/lo"
 	"golang.org/x/net/proxy"
 )
 
@@ -365,7 +366,7 @@ func (b *Bot) Processor(ctx context.Context) {
 
 						for i, v := range queue {
 							linkShorter[update.CallbackQuery.Message.Chat.ID] = append(linkShorter[update.CallbackQuery.Message.Chat.ID], v.Link)
-							msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("STATUS <b>%s</b>\nLINK: %s\nNAME: %s\n", v.Status, v.Link, pointer.Get(v.Name)))
+							msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("STATUS: <b>%s</b>\nLINK: %s\nNAME: %s\n", lo.Ternary(v.Status == "WORK", "IN WORK", v.Status), v.Link, pointer.Get(v.Name)))
 							msg.ParseMode = tgbotapi.ModeHTML
 
 							msg.ReplyMarkup = b.listKeyboard(i)
