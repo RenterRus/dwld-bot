@@ -395,7 +395,6 @@ func (b *Bot) Processor(ctx context.Context) {
 							msg.Text = fmt.Sprintf("Для видео [ %s ] задан путь загрзузки: %s", task.Link, task.UserName)
 						}
 
-						fmt.Println("data[0]:", data[0])
 						switch data[0] {
 						case qualities[one].EngName:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[one].RuName)
@@ -424,8 +423,7 @@ func (b *Bot) Processor(ctx context.Context) {
 						case qualities[nine].EngName:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[nine].RuName)
 							toSend()
-						case qualities[ten].EngName:
-							fmt.Println("!!!")
+						case listButtons[ten].EngName:
 							id, err := strconv.Atoi(task.Link)
 							if err != nil {
 								b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Невозможно удалить эту ссылку из-за внутренней ошибки"))
@@ -433,6 +431,7 @@ func (b *Bot) Processor(ctx context.Context) {
 								continue
 							}
 
+							fmt.Println("SHORTER", linkShorter[update.CallbackQuery.Message.Chat.ID])
 							fmt.Println("ID in shorter:", id)
 							fmt.Println("link in shorter:", linkShorter[update.CallbackQuery.Message.Chat.ID][id])
 
