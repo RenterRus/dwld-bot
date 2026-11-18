@@ -360,7 +360,7 @@ func (b *Bot) Processor(ctx context.Context) {
 						}
 
 						for _, v := range queue {
-							msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("[<b>%s</b>][%s] %s\n", v.Status, pointer.Get(v.Name), v.Link))
+							msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("[<b>%s</b>][%s] %s\n", v.Status, pointer.Get(v.Name), v.Link))
 							msg.ParseMode = tgbotapi.ModeHTML
 
 							msg.ReplyMarkup = b.listKeyboard(v.Link)
