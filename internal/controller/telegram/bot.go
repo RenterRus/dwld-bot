@@ -367,7 +367,7 @@ func (b *Bot) Processor(ctx context.Context) {
 						for i, v := range queue {
 							linkShorter[update.CallbackQuery.Message.Chat.ID] = append(linkShorter[update.CallbackQuery.Message.Chat.ID], v.Link)
 							msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("STATUS: <b>%s</b>\nLINK: %s\nNAME: %s\n",
-								lo.Ternary(v.Status == "WORK", "IN WORK", v.Status), v.Link, pointer.Get(v.Name)))
+								lo.Ternary(v.Status == "WORK", "IN WORK", strings.ToUpper(v.Status)), v.Link, pointer.Get(v.Name)))
 							msg.ParseMode = tgbotapi.ModeHTML
 
 							msg.ReplyMarkup = b.listKeyboard(i)
