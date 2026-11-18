@@ -358,21 +358,22 @@ func (b *Bot) Processor(ctx context.Context) {
 						if len(queue) == 0 {
 							msg.Text = "Все очереди свободны"
 						} else {
+							linkShorter[update.CallbackQuery.Message.Chat.ID] = make([]string, 0, len(queue))
+
+							for i, v := range queue {
+								linkShorter[update.CallbackQuery.Message.Chat.ID] = append(linkShorter[update.CallbackQuery.Message.Chat.ID], v.Link)
+								msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("[<b>%s</b>][%s] %s\n", v.Status, pointer.Get(v.Name), v.Link))
+								msg.ParseMode = tgbotapi.ModeHTML
+
+								msg.ReplyMarkup = b.listKeyboard(i)
+
+								b.sendMessage(msg)
+							}
+
 							msg.Text = fmt.Sprintf("Ссылок в работе: %d", len(queue))
 						}
 
-						linkShorter[update.CallbackQuery.Message.Chat.ID] = make([]string, 0, len(queue))
-
-						for i, v := range queue {
-							linkShorter[update.CallbackQuery.Message.Chat.ID] = append(linkShorter[update.CallbackQuery.Message.Chat.ID], v.Link)
-							msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("[<b>%s</b>][%s] %s\n", v.Status, pointer.Get(v.Name), v.Link))
-							msg.ParseMode = tgbotapi.ModeHTML
-
-							msg.ReplyMarkup = b.listKeyboard(i)
-
-							b.sendMessage(msg)
-						}
-
+						b.sendMessage(msg)
 					}
 
 				default:
