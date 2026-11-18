@@ -205,7 +205,7 @@ func (k *Bot) listKeyboard(link string) tgbotapi.InlineKeyboardMarkup {
 	buttonsMap := k.initListKeyboardLink(link)
 	return tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[ten].EngName].Text, buttonsMap[qualities[ten].EngName].ID),
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[listButtons[ten].EngName].Text, buttonsMap[listButtons[ten].EngName].ID),
 		),
 	)
 }
