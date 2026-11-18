@@ -2,8 +2,8 @@ package telegram
 
 import (
 	"fmt"
+	"strconv"
 
-	"github.com/cespare/go-smaz"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -194,17 +194,16 @@ func (b *Bot) initListKeyboardLink(link string) map[string]buttons {
 
 	for pos, _ := range listButtons {
 		buttonsMap[listButtons[pos].EngName] = buttons{
-			ID:   fmt.Sprintf("%s|%s", listButtons[pos].EngName, string(smaz.Compress([]byte(link)))),
+			ID:   fmt.Sprintf("%s|%s", listButtons[pos].EngName, link),
 			Text: listButtons[pos].RuName,
 		}
-		fmt.Println("SIZE IN BYTES:", len([]byte(fmt.Sprintf("%s|%s", listButtons[pos].EngName, string(smaz.Compress([]byte(link)))))))
 	}
 
 	return buttonsMap
 }
 
-func (k *Bot) listKeyboard(link string) tgbotapi.InlineKeyboardMarkup {
-	buttonsMap := k.initListKeyboardLink(link)
+func (k *Bot) listKeyboard(index int) tgbotapi.InlineKeyboardMarkup {
+	buttonsMap := k.initListKeyboardLink(strconv.Itoa(index))
 	return tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[listButtons[ten].EngName].Text, buttonsMap[listButtons[ten].EngName].ID),

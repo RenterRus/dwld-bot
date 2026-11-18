@@ -17,7 +17,6 @@ import (
 	"github.com/RenterRus/dwld-bot/internal/repo/persistent"
 	botusecase "github.com/RenterRus/dwld-bot/internal/usecase/bot"
 	"github.com/RenterRus/dwld-bot/internal/usecase/loader"
-	"github.com/cespare/go-smaz"
 	"github.com/go-playground/validator/v10"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"golang.org/x/net/proxy"
@@ -149,6 +148,8 @@ func (b *Bot) Processor(ctx context.Context) {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 	updates := b.bot.GetUpdatesChan(u)
+
+	linkShorter := make(map[int64][]string)
 
 	allowedChats := make(map[string]*UserState)
 	for _, v := range b.allowedChatID {
@@ -360,11 +361,14 @@ func (b *Bot) Processor(ctx context.Context) {
 							msg.Text = fmt.Sprintf("Ссылок в работе: %d", len(queue))
 						}
 
-						for _, v := range queue {
+						linkShorter[update.CallbackQuery.Message.Chat.ID] = make([]string, 0, len(queue))
+
+						for i, v := range queue {
+							linkShorter[update.CallbackQuery.Message.Chat.ID] = append(linkShorter[update.CallbackQuery.Message.Chat.ID], v.Link)
 							msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("[<b>%s</b>][%s] %s\n", v.Status, pointer.Get(v.Name), v.Link))
 							msg.ParseMode = tgbotapi.ModeHTML
 
-							msg.ReplyMarkup = b.listKeyboard(v.Link)
+							msg.ReplyMarkup = b.listKeyboard(i)
 
 							b.sendMessage(msg)
 						}
@@ -420,9 +424,14 @@ func (b *Bot) Processor(ctx context.Context) {
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[nine].RuName)
 							toSend()
 						case qualities[ten].EngName:
-							lnk, _ := smaz.Decompress([]byte(task.Link))
-							b.botCase.DeleteTask(ctx, string(lnk))
-							b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] удалена", string(lnk))))
+							id, err := strconv.Atoi(task.Link)
+							if err != nil {
+								b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Невозможно удалить эту ссылку из-за внутренней ошибки"))
+								fmt.Println(err.Error())
+								continue
+							}
+							b.botCase.DeleteTask(ctx, linkShorter[update.CallbackQuery.Message.Chat.ID][id])
+							b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] удалена", linkShorter[update.CallbackQuery.Message.Chat.ID][id])))
 						default:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[def].RuName)
 							toSend()
