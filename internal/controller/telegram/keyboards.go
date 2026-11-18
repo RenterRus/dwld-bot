@@ -197,7 +197,7 @@ func (b *Bot) initListKeyboardLink(link string) map[string]buttons {
 			ID:   fmt.Sprintf("%s|%s", listButtons[pos].EngName, string(smaz.Compress([]byte(link)))),
 			Text: listButtons[pos].RuName,
 		}
-		fmt.Println("SIZE IN BYTES:", len([]byte(fmt.Sprintf("%s|%s", listButtons[pos].EngName, link))))
+		fmt.Println("SIZE IN BYTES:", len([]byte(fmt.Sprintf("%s|%s", listButtons[pos].EngName, string(smaz.Compress([]byte(link)))))))
 	}
 
 	return buttonsMap
