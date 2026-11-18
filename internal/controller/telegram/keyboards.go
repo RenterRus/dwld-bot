@@ -91,6 +91,7 @@ const (
 	seven
 	eith
 	nine
+	ten
 )
 
 type Button struct {
@@ -134,7 +135,7 @@ var qualities map[Folder]Button = map[Folder]Button{
 	},
 	seven: Button{
 		EngName: "7",
-		RuName:  "Trash",
+		RuName:  "Не жалко",
 	},
 	eith: Button{
 		EngName: "8",
@@ -176,6 +177,35 @@ func (k *Bot) qualityKeyboard(link string) tgbotapi.InlineKeyboardMarkup {
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[seven].EngName].Text, buttonsMap[qualities[seven].EngName].ID),
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[eith].EngName].Text, buttonsMap[qualities[eith].EngName].ID),
 			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[nine].EngName].Text, buttonsMap[qualities[nine].EngName].ID),
+		),
+	)
+}
+
+var listButtons map[Folder]Button = map[Folder]Button{
+	ten: Button{
+		EngName: "10",
+		RuName:  "Удалить",
+	},
+}
+
+func (b *Bot) initListKeyboardLink(link string) map[string]buttons {
+	buttonsMap := make(map[string]buttons)
+
+	for pos, _ := range qualities {
+		buttonsMap[qualities[pos].EngName] = buttons{
+			ID:   fmt.Sprintf("%s|%s", qualities[pos].EngName, link),
+			Text: qualities[pos].RuName,
+		}
+	}
+
+	return buttonsMap
+}
+
+func (k *Bot) listKeyboard(link string) tgbotapi.InlineKeyboardMarkup {
+	buttonsMap := k.initListKeyboardLink(link)
+	return tgbotapi.NewInlineKeyboardMarkup(
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData(buttonsMap[qualities[ten].EngName].Text, buttonsMap[qualities[ten].EngName].ID),
 		),
 	)
 }

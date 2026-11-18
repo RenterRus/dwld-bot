@@ -354,23 +354,20 @@ func (b *Bot) Processor(ctx context.Context) {
 						msg.Text = fmt.Sprintf("Ошибка получения всей очереди: %s", err.Error())
 					} else {
 						if len(queue) == 0 {
-							b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Все очереди свободны"))
+							msg.Text = "Все очереди свободны"
 						} else {
-							b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("Ссылок в работе: %d", len(queue))))
+							msg.Text = fmt.Sprintf("Ссылок в работе: %d", len(queue))
 						}
 
-						resp := strings.Builder{}
-						lastStatus := ""
 						for _, v := range queue {
-							if lastStatus != v.Status {
-								resp.WriteString("\n")
-							}
+							msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("[<b>%s</b>][%s] %s\n", v.Status, pointer.Get(v.Name), v.Link))
+							msg.ParseMode = tgbotapi.ModeHTML
 
-							lastStatus = v.Status
-							resp.WriteString(fmt.Sprintf("[<b>%s</b>][%s] %s\n", v.Status, pointer.Get(v.Name), v.Link))
+							msg.ReplyMarkup = b.listKeyboard(v.Link)
+
+							b.sendMessage(msg)
 						}
-						msg.Text = resp.String()
-						msg.ParseMode = tgbotapi.ModeHTML
+
 					}
 
 				default:
@@ -386,33 +383,49 @@ func (b *Bot) Processor(ctx context.Context) {
 							SendAt:    time.Now().Add(time.Minute),
 						}
 
+						toSend := func() {
+							if err := b.botCase.SetTask(task); err != nil {
+								msg.Text = fmt.Sprintf("Не получилось вставить обновление, причина: %s", err.Error())
+							}
+							msg.Text = fmt.Sprintf("Для видео [ %s ] задан путь загрзузки: %s", task.Link, task.UserName)
+						}
+
 						switch data[0] {
 						case qualities[one].EngName:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[one].RuName)
+							toSend()
 						case qualities[two].EngName:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[two].RuName)
+							toSend()
 						case qualities[three].EngName:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[three].RuName)
+							toSend()
 						case qualities[four].EngName:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[four].RuName)
+							toSend()
 						case qualities[five].EngName:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[five].RuName)
+							toSend()
 						case qualities[six].EngName:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[six].RuName)
+							toSend()
 						case qualities[seven].EngName:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[seven].RuName)
+							toSend()
 						case qualities[eith].EngName:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[eith].RuName)
+							toSend()
 						case qualities[nine].EngName:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[nine].RuName)
+							toSend()
+						case qualities[ten].EngName:
+							b.botCase.DeleteTask(ctx, task.Link)
+							b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] удалена", task.Link)))
 						default:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[def].RuName)
+							toSend()
 						}
 
-						if err := b.botCase.SetTask(task); err != nil {
-							msg.Text = fmt.Sprintf("Не получилось вставить обновление, причина: %s", err.Error())
-						}
-						msg.Text = fmt.Sprintf("Для видео [ %s ] задан путь загрзузки: %s", task.Link, task.UserName)
 					} else {
 						msg.Text = "Неожиданная команда"
 					}
