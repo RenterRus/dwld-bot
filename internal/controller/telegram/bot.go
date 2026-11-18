@@ -356,6 +356,7 @@ func (b *Bot) Processor(ctx context.Context) {
 						msg.Text = fmt.Sprintf("Ошибка получения всей очереди: %s", err.Error())
 					} else {
 						if len(queue) == 0 {
+							msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "")
 							msg.Text = "Все очереди свободны"
 						} else {
 							linkShorter[update.CallbackQuery.Message.Chat.ID] = make([]string, 0, len(queue))
@@ -368,8 +369,10 @@ func (b *Bot) Processor(ctx context.Context) {
 								msg.ReplyMarkup = b.listKeyboard(i)
 
 								b.sendMessage(msg)
+
 							}
 
+							msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "")
 							msg.Text = fmt.Sprintf("Ссылок в работе: %d", len(queue))
 						}
 
