@@ -431,9 +431,7 @@ func (b *Bot) Processor(ctx context.Context) {
 								continue
 							}
 
-							fmt.Println("SHORTER", linkShorter[update.CallbackQuery.Message.Chat.ID])
-							fmt.Println("ID in shorter:", id)
-							fmt.Println("link in shorter:", linkShorter[update.CallbackQuery.Message.Chat.ID][id])
+							fmt.Println("Remove link from queue:", linkShorter[update.CallbackQuery.Message.Chat.ID][id])
 
 							b.botCase.DeleteTask(ctx, linkShorter[update.CallbackQuery.Message.Chat.ID][id])
 							b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] удалена", linkShorter[update.CallbackQuery.Message.Chat.ID][id])))
