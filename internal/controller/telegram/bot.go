@@ -27,6 +27,7 @@ const (
 	QUALITY             = 10000
 	FAST_DELETE_TIMEOUT = 1
 	TIME_SHIFT_MSG      = 500
+	DIV_FOR_QUEUE_VIEW  = time.Duration(150 * time.Millisecond)
 	DEFAULT_TIMEOUT     = FAST_DELETE_TIMEOUT
 	FAST_SEND           = 17
 	MAX_ATTEMPT         = 12345
@@ -374,6 +375,7 @@ func (b *Bot) Processor(ctx context.Context) {
 
 							b.sendMessage(msg)
 
+							time.Sleep(DIV_FOR_QUEUE_VIEW)
 						}
 
 						msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "")
