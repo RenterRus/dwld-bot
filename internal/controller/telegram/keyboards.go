@@ -191,10 +191,10 @@ var listButtons map[Folder]Button = map[Folder]Button{
 func (b *Bot) initListKeyboardLink(link string) map[string]buttons {
 	buttonsMap := make(map[string]buttons)
 
-	for pos, _ := range qualities {
-		buttonsMap[qualities[pos].EngName] = buttons{
-			ID:   fmt.Sprintf("%s|%s", qualities[pos].EngName, link),
-			Text: qualities[pos].RuName,
+	for pos, _ := range listButtons {
+		buttonsMap[listButtons[pos].EngName] = buttons{
+			ID:   fmt.Sprintf("%s|%s", listButtons[pos].EngName, link),
+			Text: listButtons[pos].RuName,
 		}
 	}
 
