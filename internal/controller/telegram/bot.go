@@ -17,6 +17,7 @@ import (
 	"github.com/RenterRus/dwld-bot/internal/repo/persistent"
 	botusecase "github.com/RenterRus/dwld-bot/internal/usecase/bot"
 	"github.com/RenterRus/dwld-bot/internal/usecase/loader"
+	"github.com/cespare/go-smaz"
 	"github.com/go-playground/validator/v10"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"golang.org/x/net/proxy"
@@ -419,8 +420,9 @@ func (b *Bot) Processor(ctx context.Context) {
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[nine].RuName)
 							toSend()
 						case qualities[ten].EngName:
-							b.botCase.DeleteTask(ctx, task.Link)
-							b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] удалена", task.Link)))
+							lnk, _ := smaz.Decompress([]byte(task.Link))
+							b.botCase.DeleteTask(ctx, string(lnk))
+							b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] удалена", string(lnk))))
 						default:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[def].RuName)
 							toSend()

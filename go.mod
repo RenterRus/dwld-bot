@@ -15,12 +15,18 @@ require (
 )
 
 require (
+	github.com/cespare/go-smaz v1.0.0 // indirect
+	github.com/kjk/smaz v0.0.0-20151202183815-c61c680e82ff // indirect
+)
+
+require (
 	github.com/fsnotify/fsnotify v1.8.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.8 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
+	github.com/golanglib/smaz v0.0.0-20151202183815-c61c680e82ff
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
 	github.com/sagikazarmark/locafero v0.7.0 // indirect

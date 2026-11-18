@@ -3,6 +3,7 @@ package telegram
 import (
 	"fmt"
 
+	"github.com/cespare/go-smaz"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -193,7 +194,7 @@ func (b *Bot) initListKeyboardLink(link string) map[string]buttons {
 
 	for pos, _ := range listButtons {
 		buttonsMap[listButtons[pos].EngName] = buttons{
-			ID:   fmt.Sprintf("%s|%s", listButtons[pos].EngName, link),
+			ID:   fmt.Sprintf("%s|%s", listButtons[pos].EngName, string(smaz.Compress([]byte(link)))),
 			Text: listButtons[pos].RuName,
 		}
 		fmt.Println("SIZE IN BYTES:", len([]byte(fmt.Sprintf("%s|%s", listButtons[pos].EngName, link))))
