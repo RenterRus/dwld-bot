@@ -375,8 +375,6 @@ func (b *Bot) Processor(ctx context.Context) {
 							msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "")
 							msg.Text = fmt.Sprintf("Ссылок в работе: %d", len(queue))
 						}
-
-						b.sendMessage(msg)
 					}
 
 				default:
