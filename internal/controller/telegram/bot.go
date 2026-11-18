@@ -395,6 +395,7 @@ func (b *Bot) Processor(ctx context.Context) {
 							msg.Text = fmt.Sprintf("Для видео [ %s ] задан путь загрзузки: %s", task.Link, task.UserName)
 						}
 
+						fmt.Println("data[0]:", data[0])
 						switch data[0] {
 						case qualities[one].EngName:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[one].RuName)
