@@ -101,50 +101,50 @@ type Button struct {
 }
 
 /*
-[Полезно | one]			[На работу | two]	   	[Топ | three]
-[В дорогу | four]		[Совместно | five]		[На фон-к | six]
-[Trash | seven]			[На тренировку | eith]	 [Интересно | nine]
+[💡 Облучение | one]			[🎧 Послушать | two]	   	[🚀 Топ | three]
+[🚙 В дорогу | four]			[👫 Совместно | five]		[📺 На фон-к | six]
+[🍃 Не жалко | seven]			[🧃 Выжать | eith]	 		[👀 Интересно | nine]
 */
 var qualities map[Folder]Button = map[Folder]Button{
 	def: Button{
 		EngName: "0",
-		RuName:  "Без категории",
+		RuName:  "❓ Без категории",
 	},
 	one: Button{
 		EngName: "1",
-		RuName:  "Облучение",
+		RuName:  "💡 Облучение",
 	},
 	two: Button{
 		EngName: "2",
-		RuName:  "На работу",
+		RuName:  "🎧 Послушать",
 	},
 	three: Button{
 		EngName: "3",
-		RuName:  "Топ",
+		RuName:  "🚀 Топ",
 	},
 	four: Button{
 		EngName: "4",
-		RuName:  "В дорогу",
+		RuName:  "🚙 В дорогу",
 	},
 	five: Button{
 		EngName: "5",
-		RuName:  "Совместно",
+		RuName:  "👫 Совместно",
 	},
 	six: Button{
 		EngName: "6",
-		RuName:  "На фон-к",
+		RuName:  "📺 На фон-к",
 	},
 	seven: Button{
 		EngName: "7",
-		RuName:  "Не жалко",
+		RuName:  "🍃 Не жалко",
 	},
 	eith: Button{
 		EngName: "8",
-		RuName:  "На тренировку",
+		RuName:  "🧃 Выжать",
 	},
 	nine: Button{
 		EngName: "9",
-		RuName:  "Интересно",
+		RuName:  "👀 Интересно",
 	},
 }
 
