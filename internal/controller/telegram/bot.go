@@ -141,7 +141,7 @@ func (b *Bot) toAdmins(msg string) {
 	}
 
 	for _, v := range admins {
-		b.sendMessage(tgbotapi.NewMessage(v, msg), pointer.To(TTL_QUEUE_VIEW))
+		b.sendMessage(tgbotapi.NewMessage(v, msg), TTL_QUEUE_VIEW)
 	}
 }
 
@@ -202,7 +202,7 @@ func (b *Bot) Processor(ctx context.Context) {
 
 						b.botCase.DeleteTask(ctx, update.Message.Text)
 
-						b.sendMessage(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] удалена", update.Message.Text)), nil)
+						b.sendMessage(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] удалена", update.Message.Text)), DEFAULT_TIMEOUT)
 
 						continue
 					}
@@ -220,7 +220,7 @@ func (b *Bot) Processor(ctx context.Context) {
 							}
 						}
 
-						b.sendMessage(msg, nil)
+						b.sendMessage(msg, DEFAULT_TIMEOUT)
 
 						// Это ссылка, но вставка не удалась
 					} else if err := b.botCase.SetTask(entity.TaskModel{
@@ -234,7 +234,7 @@ func (b *Bot) Processor(ctx context.Context) {
 					}); err != nil {
 						b.sendMessage(tgbotapi.NewMessage(update.Message.Chat.ID,
 							fmt.Sprintf("Не удалось вставить в очередь ссылку %s. Причина: %v", update.Message.Text, err.Error())),
-							pointer.To(TTL_QUEUE_VIEW))
+							TTL_QUEUE_VIEW)
 					} else {
 						isLinkInsert = true
 						//Ссылка встала в очередь
@@ -243,7 +243,7 @@ func (b *Bot) Processor(ctx context.Context) {
 						//Прикрепляем клавитуру выбора качества для конкретной ссылки
 						msg.ReplyMarkup = b.qualityKeyboard(update.Message.Text)
 
-						b.sendMessage(msg, nil)
+						b.sendMessage(msg, DEFAULT_TIMEOUT)
 						// Удаляем сообщение пользователя
 						b.deleteMessage.SetToQueue(&rbot.TaskToDelete{
 							ChatID:    update.Message.Chat.ID,
@@ -254,7 +254,7 @@ func (b *Bot) Processor(ctx context.Context) {
 
 				} else { // Если нет, то даем ответ о запрещенном доступе
 					b.toAdmins(fmt.Sprintf("Попытка неавторизованного доступа: %s %d", update.Message.From.UserName, int(update.Message.Chat.ID)))
-					b.sendMessage(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Доступ запрещен: %d", int(update.Message.Chat.ID))), nil)
+					b.sendMessage(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Доступ запрещен: %d", int(update.Message.Chat.ID))), DEFAULT_TIMEOUT)
 				}
 
 				// Отправляем сообщение
@@ -301,7 +301,7 @@ func (b *Bot) Processor(ctx context.Context) {
 							msg.Text = "Ссылок нет"
 							break
 						} else {
-							b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("Ссылок в работе: %d", len(queue))), nil)
+							b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("Ссылок в работе: %d", len(queue))), DEFAULT_TIMEOUT)
 						}
 						resp := strings.Builder{}
 						for _, v := range queue {
@@ -326,7 +326,7 @@ func (b *Bot) Processor(ctx context.Context) {
 						queues.WriteString("QUEUE (CACHE)\n")
 						b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID,
 							"Тут отображаются очереди и показания датчиков скачивальщиков. Кнопка \"Показать очередь\" покажет очередь по всей системе с включением очереди бота"),
-							nil)
+							DEFAULT_TIMEOUT)
 						time.Sleep(time.Millisecond * TIME_SHIFT_MSG)
 
 						for i, v := range status {
@@ -335,7 +335,7 @@ func (b *Bot) Processor(ctx context.Context) {
 
 							msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, sensors.String())
 							msg.ParseMode = tgbotapi.ModeHTML
-							b.sendMessage(msg, pointer.To(TTL_QUEUE_VIEW))
+							b.sendMessage(msg, TTL_QUEUE_VIEW)
 							sensors.Reset()
 							time.Sleep(time.Millisecond * TIME_SHIFT_MSG)
 
@@ -349,7 +349,7 @@ func (b *Bot) Processor(ctx context.Context) {
 
 							msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("%s\n%s", sensors.String(), queues.String()))
 							msg.ParseMode = tgbotapi.ModeHTML
-							b.sendMessage(msg, nil)
+							b.sendMessage(msg, DEFAULT_TIMEOUT)
 
 							queues.Reset()
 						}
@@ -376,7 +376,7 @@ func (b *Bot) Processor(ctx context.Context) {
 
 							msg.ReplyMarkup = b.listKeyboard(i)
 
-							b.sendMessage(msg, pointer.To(TTL_QUEUE_VIEW))
+							b.sendMessage(msg, TTL_QUEUE_VIEW)
 
 							time.Sleep(DIV_FOR_QUEUE_VIEW)
 						}
@@ -437,7 +437,7 @@ func (b *Bot) Processor(ctx context.Context) {
 						case listButtons[ten].EngName:
 							id, err := strconv.Atoi(task.Link)
 							if err != nil {
-								b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Невозможно удалить эту ссылку из-за внутренней ошибки"), nil)
+								b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Невозможно удалить эту ссылку из-за внутренней ошибки"), DEFAULT_TIMEOUT)
 								fmt.Println(err.Error())
 								continue
 							}
@@ -447,7 +447,7 @@ func (b *Bot) Processor(ctx context.Context) {
 							b.botCase.DeleteTask(ctx, linkShorter[update.CallbackQuery.Message.Chat.ID][id])
 							b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID,
 								fmt.Sprintf("Ссылка [%s] удалена", linkShorter[update.CallbackQuery.Message.Chat.ID][id])),
-								nil)
+								DEFAULT_TIMEOUT)
 						default:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[def].RuName)
 							toSend()
@@ -458,7 +458,7 @@ func (b *Bot) Processor(ctx context.Context) {
 					}
 				}
 
-				b.sendMessage(msg, nil)
+				b.sendMessage(msg, DEFAULT_TIMEOUT)
 			}
 		}
 	}()
@@ -469,7 +469,7 @@ func (b *Bot) Processor(ctx context.Context) {
 	time.Sleep(time.Second * 3)
 }
 
-func (b *Bot) sendMessage(c tgbotapi.Chattable, ttl *time.Duration) {
+func (b *Bot) sendMessage(c tgbotapi.Chattable, ttl time.Duration) {
 	b.m.Lock()
 	defer b.m.Unlock()
 	var mInfo tgbotapi.Message
@@ -481,7 +481,7 @@ func (b *Bot) sendMessage(c tgbotapi.Chattable, ttl *time.Duration) {
 		b.deleteMessage.SetToQueue(&rbot.TaskToDelete{
 			ChatID:    mInfo.Chat.ID,
 			MessageID: mInfo.MessageID,
-			Deadline:  lo.Ternary(ttl != nil, time.Now().Add(*ttl), time.Now().Add(DEFAULT_TIMEOUT)),
+			Deadline:  time.Now().Add(ttl),
 		})
 	}
 }
