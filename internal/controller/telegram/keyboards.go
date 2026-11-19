@@ -103,7 +103,7 @@ type Button struct {
 /*
 [💡 Облучение | one]			[🎧 Послушать | two]	   	[🚀 Топ | three]
 [🚙 В дорогу | four]			[👫 Совместно | five]		[📺 На фон-к | six]
-[🍃 Не жалко | seven]			[🧃 Выжать | eith]	 		[👀 Интересно | nine]
+[🍂 Не жалко | seven]			[♻️ Выжать | eith]	 		[👀 Интересно | nine]
 */
 var qualities map[Folder]Button = map[Folder]Button{
 	def: Button{
@@ -136,11 +136,11 @@ var qualities map[Folder]Button = map[Folder]Button{
 	},
 	seven: Button{
 		EngName: "7",
-		RuName:  "🍃 Не жалко",
+		RuName:  "🍂 Не жалко",
 	},
 	eith: Button{
 		EngName: "8",
-		RuName:  "🧃 Выжать",
+		RuName:  "♻️ Выжать",
 	},
 	nine: Button{
 		EngName: "9",
