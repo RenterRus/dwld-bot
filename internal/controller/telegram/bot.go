@@ -24,14 +24,14 @@ import (
 )
 
 const (
-	QUALITY             = 10000
-	FAST_DELETE_TIMEOUT = 1
-	TIME_SHIFT_MSG      = 500
-	DIV_FOR_QUEUE_VIEW  = time.Duration(150 * time.Millisecond)
-	DEFAULT_TIMEOUT     = FAST_DELETE_TIMEOUT
-	FAST_SEND           = 17
-	MAX_ATTEMPT         = 12345
-	MAX_ATTEMPT_PROXY   = 3
+	QUALITY            = 10000
+	TIME_SHIFT_MSG     = 500
+	DIV_FOR_QUEUE_VIEW = time.Duration(150 * time.Millisecond)
+	TTL_QUEUE_VIEW     = time.Duration(3 * time.Minute)
+	DEFAULT_TIMEOUT    = time.Minute
+	FAST_SEND          = 17
+	MAX_ATTEMPT        = 12345
+	MAX_ATTEMPT_PROXY  = 3
 
 	FOLDER_FORMAT = "[%s] %s"
 )
@@ -141,7 +141,7 @@ func (b *Bot) toAdmins(msg string) {
 	}
 
 	for _, v := range admins {
-		b.sendMessage(tgbotapi.NewMessage(v, msg))
+		b.sendMessage(tgbotapi.NewMessage(v, msg), pointer.To(TTL_QUEUE_VIEW))
 	}
 }
 
@@ -191,7 +191,7 @@ func (b *Bot) Processor(ctx context.Context) {
 				b.deleteMessage.SetToQueue(&rbot.TaskToDelete{
 					ChatID:    update.Message.Chat.ID,
 					MessageID: update.Message.MessageID,
-					Deadline:  time.Now().Add(time.Minute * FAST_DELETE_TIMEOUT),
+					Deadline:  time.Now().Add(DEFAULT_TIMEOUT),
 				})
 
 				if _, ok := allowedChats[chatID]; ok {
@@ -202,14 +202,14 @@ func (b *Bot) Processor(ctx context.Context) {
 
 						b.botCase.DeleteTask(ctx, update.Message.Text)
 
-						b.sendMessage(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] удалена", update.Message.Text)))
+						b.sendMessage(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] удалена", update.Message.Text)), nil)
 
 						continue
 					}
 
 					// Не получилось обнаружить ссылку
 					if err := validate.Var(update.Message.Text, "url"); err != nil {
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, welcomeMSG(update.Message.Chat.ID))
+						msg = tgbotapi.NewMessage(update.Message.Chat.ID, welcomeMSG(update.Message.Chat.ID, update.Message.From.UserName))
 
 						stat, ok := allowedChats[fmt.Sprintf("%d", int(update.Message.Chat.ID))]
 						if ok {
@@ -220,6 +220,8 @@ func (b *Bot) Processor(ctx context.Context) {
 							}
 						}
 
+						b.sendMessage(msg, nil)
+
 						// Это ссылка, но вставка не удалась
 					} else if err := b.botCase.SetTask(entity.TaskModel{
 						Link:      update.Message.Text,
@@ -228,9 +230,11 @@ func (b *Bot) Processor(ctx context.Context) {
 						UserID:    strconv.Itoa(int(update.Message.Chat.ID)),
 						MessageID: strconv.Itoa(update.Message.MessageID),
 						ErrorMsg:  "",
-						SendAt:    time.Now().Add(time.Minute * DEFAULT_TIMEOUT),
+						SendAt:    time.Now().Add(DEFAULT_TIMEOUT),
 					}); err != nil {
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Не удалось вставить в очередь ссылку %s. Причина: %v", update.Message.Text, err.Error()))
+						b.sendMessage(tgbotapi.NewMessage(update.Message.Chat.ID,
+							fmt.Sprintf("Не удалось вставить в очередь ссылку %s. Причина: %v", update.Message.Text, err.Error())),
+							pointer.To(TTL_QUEUE_VIEW))
 					} else {
 						isLinkInsert = true
 						//Ссылка встала в очередь
@@ -239,6 +243,7 @@ func (b *Bot) Processor(ctx context.Context) {
 						//Прикрепляем клавитуру выбора качества для конкретной ссылки
 						msg.ReplyMarkup = b.qualityKeyboard(update.Message.Text)
 
+						b.sendMessage(msg, nil)
 						// Удаляем сообщение пользователя
 						b.deleteMessage.SetToQueue(&rbot.TaskToDelete{
 							ChatID:    update.Message.Chat.ID,
@@ -248,22 +253,18 @@ func (b *Bot) Processor(ctx context.Context) {
 					}
 
 				} else { // Если нет, то даем ответ о запрещенном доступе
-					msg = tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Доступ запрещен: %d", int(update.Message.Chat.ID)))
+					b.toAdmins(fmt.Sprintf("Попытка неавторизованного доступа: %s %d", update.Message.From.UserName, int(update.Message.Chat.ID)))
+					b.sendMessage(tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Доступ запрещен: %d", int(update.Message.Chat.ID))), nil)
 				}
 
 				// Отправляем сообщение
-				var mInfo tgbotapi.Message
-				var err error
-				if mInfo, err = b.bot.Send(msg); err != nil {
-					fmt.Println("Send", err)
-				}
 				if isLinkInsert {
 					if err := b.botCase.SetTask(entity.TaskModel{
 						Link:      update.Message.Text,
 						Quality:   QUALITY,
 						UserName:  fmt.Sprintf(FOLDER_FORMAT, update.Message.From.UserName, qualities[def].RuName),
 						UserID:    strconv.Itoa(int(update.Message.Chat.ID)),
-						MessageID: strconv.Itoa(mInfo.MessageID),
+						MessageID: strconv.Itoa(update.Message.MessageID),
 						ErrorMsg:  "",
 						SendAt:    time.Now().Add(time.Second * FAST_SEND),
 					}); err != nil {
@@ -272,7 +273,7 @@ func (b *Bot) Processor(ctx context.Context) {
 				} else {
 					b.deleteMessage.SetToQueue(&rbot.TaskToDelete{
 						ChatID:    update.Message.Chat.ID,
-						MessageID: mInfo.MessageID,
+						MessageID: update.Message.MessageID,
 						Deadline:  time.Now().Add(time.Second * FAST_SEND),
 					})
 				}
@@ -300,7 +301,7 @@ func (b *Bot) Processor(ctx context.Context) {
 							msg.Text = "Ссылок нет"
 							break
 						} else {
-							b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("Ссылок в работе: %d", len(queue))))
+							b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("Ссылок в работе: %d", len(queue))), nil)
 						}
 						resp := strings.Builder{}
 						for _, v := range queue {
@@ -323,7 +324,9 @@ func (b *Bot) Processor(ctx context.Context) {
 
 						queues := strings.Builder{}
 						queues.WriteString("QUEUE (CACHE)\n")
-						b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Тут отображаются очереди и показания датчиков скачивальщиков. Кнопка \"Показать очередь\" покажет очередь по всей системе с включением очереди бота"))
+						b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID,
+							"Тут отображаются очереди и показания датчиков скачивальщиков. Кнопка \"Показать очередь\" покажет очередь по всей системе с включением очереди бота"),
+							nil)
 						time.Sleep(time.Millisecond * TIME_SHIFT_MSG)
 
 						for i, v := range status {
@@ -332,7 +335,7 @@ func (b *Bot) Processor(ctx context.Context) {
 
 							msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, sensors.String())
 							msg.ParseMode = tgbotapi.ModeHTML
-							b.sendMessage(msg)
+							b.sendMessage(msg, pointer.To(TTL_QUEUE_VIEW))
 							sensors.Reset()
 							time.Sleep(time.Millisecond * TIME_SHIFT_MSG)
 
@@ -346,7 +349,7 @@ func (b *Bot) Processor(ctx context.Context) {
 
 							msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("%s\n%s", sensors.String(), queues.String()))
 							msg.ParseMode = tgbotapi.ModeHTML
-							b.sendMessage(msg)
+							b.sendMessage(msg, nil)
 
 							queues.Reset()
 						}
@@ -373,7 +376,7 @@ func (b *Bot) Processor(ctx context.Context) {
 
 							msg.ReplyMarkup = b.listKeyboard(i)
 
-							b.sendMessage(msg)
+							b.sendMessage(msg, pointer.To(TTL_QUEUE_VIEW))
 
 							time.Sleep(DIV_FOR_QUEUE_VIEW)
 						}
@@ -434,7 +437,7 @@ func (b *Bot) Processor(ctx context.Context) {
 						case listButtons[ten].EngName:
 							id, err := strconv.Atoi(task.Link)
 							if err != nil {
-								b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Невозможно удалить эту ссылку из-за внутренней ошибки"))
+								b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Невозможно удалить эту ссылку из-за внутренней ошибки"), nil)
 								fmt.Println(err.Error())
 								continue
 							}
@@ -442,7 +445,9 @@ func (b *Bot) Processor(ctx context.Context) {
 							fmt.Println("Remove link from queue:", linkShorter[update.CallbackQuery.Message.Chat.ID][id])
 
 							b.botCase.DeleteTask(ctx, linkShorter[update.CallbackQuery.Message.Chat.ID][id])
-							b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, fmt.Sprintf("Ссылка [%s] удалена", linkShorter[update.CallbackQuery.Message.Chat.ID][id])))
+							b.sendMessage(tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID,
+								fmt.Sprintf("Ссылка [%s] удалена", linkShorter[update.CallbackQuery.Message.Chat.ID][id])),
+								nil)
 						default:
 							task.UserName = fmt.Sprintf(FOLDER_FORMAT, update.CallbackQuery.From.UserName, qualities[def].RuName)
 							toSend()
@@ -453,7 +458,7 @@ func (b *Bot) Processor(ctx context.Context) {
 					}
 				}
 
-				b.sendMessage(msg)
+				b.sendMessage(msg, nil)
 			}
 		}
 	}()
@@ -464,7 +469,7 @@ func (b *Bot) Processor(ctx context.Context) {
 	time.Sleep(time.Second * 3)
 }
 
-func (b *Bot) sendMessage(c tgbotapi.Chattable) {
+func (b *Bot) sendMessage(c tgbotapi.Chattable, ttl *time.Duration) {
 	b.m.Lock()
 	defer b.m.Unlock()
 	var mInfo tgbotapi.Message
@@ -476,7 +481,7 @@ func (b *Bot) sendMessage(c tgbotapi.Chattable) {
 		b.deleteMessage.SetToQueue(&rbot.TaskToDelete{
 			ChatID:    mInfo.Chat.ID,
 			MessageID: mInfo.MessageID,
-			Deadline:  time.Now().Add(time.Minute * DEFAULT_TIMEOUT),
+			Deadline:  lo.Ternary(ttl != nil, time.Now().Add(*ttl), time.Now().Add(DEFAULT_TIMEOUT)),
 		})
 	}
 }

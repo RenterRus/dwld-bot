@@ -26,9 +26,9 @@ type UserState struct {
 	Mode    MODE
 }
 
-func welcomeMSG(chatID int64) string {
+func welcomeMSG(chatID int64, name string) string {
 	welcome := strings.Builder{}
-	welcome.WriteString(fmt.Sprintf("Доступ разрешен для: %d", int(chatID)))
+	welcome.WriteString(fmt.Sprintf("Доступ разрешен для: %s %d", name, int(chatID)))
 	welcome.WriteString("\n")
 	welcome.WriteString(ip())
 	welcome.WriteString("\n")
