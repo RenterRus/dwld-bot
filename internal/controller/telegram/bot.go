@@ -359,10 +359,12 @@ func (b *Bot) Processor(ctx context.Context) {
 					queue, err := b.botCase.ViewTasks(ctx, strconv.Itoa(int(update.CallbackQuery.Message.Chat.ID)))
 					if err != nil {
 						msg.Text = fmt.Sprintf("Ошибка получения всей очереди: %s", err.Error())
+						b.sendMessage(msg, TTL_QUEUE_VIEW)
 					} else {
 						if len(queue) == 0 {
 							msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "")
 							msg.Text = "Все очереди свободны"
+							b.sendMessage(msg, DEFAULT_TIMEOUT)
 							continue
 						}
 
